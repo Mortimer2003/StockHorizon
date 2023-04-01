@@ -1,5 +1,4 @@
 # DEV BRANCH
-> this dev branch is the dev env of Contri.build.
 
 ** Testing CI/CD **
 
