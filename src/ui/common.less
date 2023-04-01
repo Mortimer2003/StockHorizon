@@ -1,0 +1,144 @@
+@font-face {
+  font-family: 'Mark Pro';
+  src: url("../assets/fonts/Mark Pro.ttf");
+}
+@font-face {
+  font-family: 'Mark Pro Bold';
+  src: url("../assets/fonts/Mark Pro Bold.ttf");
+}
+@font-face {
+  font-family: 'Geomanist-Regular';
+  src: url("../assets/fonts/Geomanist-Regular.otf");
+}
+@font-face {
+  font-family: 'Geomanist-Regular-Italic';
+  src: url("../assets/fonts/Geomanist-Regular-Italic.otf");
+}
+@font-face {
+  font-family: 'Geomanist-Bold';
+  src: url("../assets/fonts/Geomanist-Bold.ttf");
+}
+
+.root{
+  font-family: Roboto;
+}
+div {
+  font-family: Roboto;
+}
+
+.page {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+
+  color: deepskyblue;
+  overflow: hidden;
+}
+
+:focus-visible {
+  outline: none;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: content-box;
+}
+
+a {
+  color: #B37775;
+  text-decoration: underline;
+}
+a:hover {
+  color: #B37775;
+  text-decoration: underline;
+}
+
+h1,h2,h3,h4,h5,h6 {
+  color: white;
+  font-weight: initial;
+}
+strong {
+  font-weight: bold !important;
+}
+p {
+  margin: 1em 0;
+}
+.button {
+  position: relative;
+
+  width: 15vw;
+
+  max-width: 160px;
+  font-size: 1vmin;
+
+  text-align: center;
+  color: #89FFFD;
+
+  .label {
+    position: relative;
+    transform: translateY(2px) scaleY(0.75);
+  }
+
+  .effect {
+    position: absolute;
+    left: 50%; top: 50%;
+    width: 50%; height: 50%;
+    background: radial-gradient(closest-side, rgba(137, 255, 253, 0.33), transparent);
+
+    transform: translate(-50%, -50%);
+  }
+
+  img {
+    position: absolute;
+    left: 0; top: 50%;
+    width: 100%; // height: 100%;
+    object-fit: contain;
+
+    transform: translate(0, -50%);
+  }
+}
+html, body {
+  scrollbar-width: none !important; /* firefox */
+  -ms-overflow-style: none !important; /* IE 10+ */
+  font-size: unset;
+  line-height: normal;
+  background-color: #bce2e1;
+  //overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+body::-webkit-scrollbar {
+  display: none !important;
+}
+img {
+  //vertical-align: unset;
+}
+.mouse-pointer {
+  cursor: pointer;
+  user-select: none;
+}
+.mouse-disabled {
+  cursor: not-allowed;
+  user-select: none;
+}
+.text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; //文本不换行，这样超出一行的部分被截取，显示...
+}
+
+.no-scroll {
+  scrollbar-width: none !important; /* firefox */
+  -ms-overflow-style: none !important; /* IE 10+ */
+}
+.no-scroll::-webkit-scrollbar {
+  display: none !important;
+}
+
+/*腾讯云点播禁用firefox全屏、设置按钮*/
+.trump-button[sub-component="fullscreen_btn"],.trump-button[now="fullscreen"]{ display:none!important;}
+.trump-button[sub-component="setting"]{ display:none !important;}

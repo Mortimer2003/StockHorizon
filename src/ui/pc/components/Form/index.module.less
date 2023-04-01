@@ -1,0 +1,300 @@
+.form {
+  width: 100%;
+  background-color: transparent;
+  .form-title {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    .title {
+      font-size: 24px;
+      color: rgba(255,255,255,0.9);
+    }
+    .des {
+      font-size: 18px;
+      color: rgba(255,255,255,0.7);
+      margin-top: 10px;
+    }
+  }
+  .form-body {
+    width: 100%;
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+}
+
+.form-input {
+  --form-input-height: 60px;
+  width: 100%;
+  height: var(--form-input-height);
+  //overflow: hidden;
+  font-family: "Mark Pro";
+  label {
+    display: flex;
+    flex-direction: column;
+    .label {
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: rgba(255,255,255,0.25);
+    }
+    input {
+      height: var(--form-input-height);
+      line-height: var(--form-input-height);
+      color: white;
+      flex: 1;
+      appearance: none;
+      outline: none;
+      border: none;
+      border: initial;
+      background-color: #27282F;
+      border: none;
+      border-radius: 20px;
+      font-size: 16px;
+      padding: 0 20px;
+    }
+    span {
+      white-space: nowrap;
+    }
+    textarea {
+      appearance: none;
+      border: none;
+      outline: none;
+      resize: none;
+      //width: 100%;
+      min-height: 150px;
+      max-height: 200px;
+      overflow-y: auto;
+      padding: 20px 20px;
+      color: white;
+      background-color: #27282F;
+      border-radius: 20px;
+      font-size: 16px;
+    }
+    textarea::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}
+
+.form-select {
+  --base-form-select-height: 70px;
+  min-width: 128px;
+  height: var(--base-form-select-height);
+  padding: 0 20px;
+  background-color: #27282F;
+  color: white;
+  border-radius: 15px;
+  position: relative;
+  .main {
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    span {
+      line-height: var(--base-form-select-height);
+      vertical-align: middle;
+      flex: 1;
+      text-align: center;
+    }
+  }
+  .spotlight {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    visibility: hidden;
+    background: transparent;
+    z-index: -10;
+    transition: all 0.3s ease-in-out;
+  }
+  .spotlight-show {
+    visibility: visible;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.2);
+  }
+  .dropdown {
+    position: absolute;
+    top: calc(var(--base-form-select-height) + 10px);
+    left: 0;
+    width: 100%;
+    z-index: 1001;
+    color: #ffffff;
+    background-color: #27282F;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    .dropdown-group {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      .dropdown-group-label {
+        width: 100%;
+        padding: 0 5px;
+        margin: 10px 0;
+        text-align: left;
+        cursor: auto;
+        color: white;
+        background-color: #27282F;
+      }
+      .dropdown-group-item {
+        width: 100%;
+        text-align: center;
+        padding: 10px 5px;
+        cursor: pointer;
+        transition: opacity 0.3s ease-in-out;
+      }
+      .dropdown-group-item:hover {
+        opacity: 0.6;
+      }
+    }
+  }
+}
+
+.form-checkbox {
+  appearance: none;
+  flex-shrink: 0;
+  height: 40px;
+  width: 150px;
+  line-height: 40px;
+  text-align: center;
+
+  //padding: 10px 20px;
+  margin-right: 15px;
+  border-radius: 30px;
+  border: 1px solid #171819;
+  background-color: #171819;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+
+  font-family: "Mark Pro";
+  font-size: 18px;
+  input {
+    position: absolute;
+    opacity: 0;
+  }
+}
+
+.form-checkbox input:checked ~ span:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  height: 40px;
+  width: 150px;
+  border-radius: 30px;
+  border: 1px solid white;
+}
+
+.form-switch {
+  --base-form-switch-height: 50px;
+  --base-form-switch-border: 1px;
+  --base-form-switch-radius: 10px;
+  --base-form-switch-padding: 5px;
+  height: var(--base-form-switch-height);
+  width: 150px;
+  padding: 5px;
+  border-radius: 10px;
+  border: var(--base-form-switch-border) solid rgba(255,255,255,0.2);
+  background-color: #27282F;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  span {
+    border-radius: calc(
+            calc(var(--base-form-switch-radius) - var(--base-form-switch-border)) -
+            var(--base-form-switch-padding)
+    );
+    line-height: calc(
+            var(--base-form-switch-height) - calc(2 * var(--base-form-switch-border)) -
+            calc(2 * var(--base-form-switch-padding))
+    );
+    text-align: center;
+    transition: background 0.3s ease-in-out;
+  }
+}
+
+.form-date-time-picker {
+  --base-form-date-time-picker-height: 70px;
+  min-width: 300px;
+  height: var(--base-form-date-time-picker-height);
+  appearance: none;
+  border: none;
+  outline: none;
+  padding: 0 30px;
+  color: white;
+  background-color: #27282F;
+  border-radius: 15px;
+}
+::-webkit-calendar-picker-indicator {
+  height: 20px;
+  width: 20px;
+  filter: invert(1);
+}
+
+::-webkit-outer-spin-button,
+::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+.form-image-uploader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 192px;
+  height: 192px;
+
+  padding: 24px;
+
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 8px;
+  .img {
+    position: relative;
+    height: 100%;
+    width: 100%;
+
+    object-fit: contain;
+
+    user-select: none;
+  }
+  .circle {
+    position: relative;
+    width: 80%;
+    height: 80%;
+    min-height: 56px;
+    min-width: 56px;
+    max-height: 80px;
+    max-width: 80px;
+    border-radius: 50%;
+    cursor: pointer;
+    user-select: none;
+    .logo {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+    }
+  }
+  .tips {
+    font-size: 12px;
+    opacity: 0.6;
+    color: white;
+  }
+}
