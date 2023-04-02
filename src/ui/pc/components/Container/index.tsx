@@ -43,6 +43,7 @@ function CompDetail(props) {
     )
 }
 
+// 企业简介 中文名 英文名 行业分块 交易所
 function CompContainer(props) {
     const companyIntro = props.company_intro,
         companyZhName = props.company_zh_name,
