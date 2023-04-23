@@ -1,0 +1,84 @@
+.news-container {
+  flex-grow: 1;
+
+  //width: 30vw; //TODO:待调整
+  height: 40vh; //TODO:待调整
+  margin: 1.5vh 2vh 2vh;
+  border-radius: 30px;
+  background-color: rgba(255, 255, 255, 0.5);
+  padding: 15px;
+  overflow: visible;
+
+  .title {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+
+    > span {
+      font-size: 20px;
+      font-family: 'Alimama';
+    }
+
+    .page-buttons{
+      display: flex;
+      justify-content: end;
+      cursor: pointer;
+      button{
+        background-color: transparent;
+        border: none;
+      }
+      button:disabled{
+        color: rgba(0,0,0,0.2);
+      }
+    }
+  }
+
+  .separate{
+    height:1px;
+    width: 100%;
+
+    background-color: #b8bcbb;
+    margin: 5px 15px 5px 0;
+  }
+
+  .content{
+    a:hover {
+      color: black;
+    }
+
+    .news-top {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content:space-between;
+
+      .left{
+        font-size: 12px;
+      }
+      .right{
+        font-weight: lighter;
+        font-size: 14px;
+      }
+    }
+    .news-information {
+
+    }
+
+    .separate{
+      height:0.5px;
+      width: 100%;
+
+      background-color: #b8bcbb;
+      margin: 5px 15px 5px 0;
+    }
+  }
+
+
+
+
+
+}
+
+
+

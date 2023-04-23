@@ -1,0 +1,194 @@
+
+.navigation{
+  display: flex;
+  width: 100vw; //TODO:待修改
+  height: 8vh;
+  padding-top: 2vh;
+  background-color: rgba(255, 255, 255, 0.5);
+
+  .home-icon{
+    position: relative;
+    top: 1vh;
+    left: 20px;
+    margin-right: 20px;
+    height: 5vh;
+    width: auto;
+  }
+
+  .return{
+    position: relative;
+    top: 1vh;
+    left: 20px;
+    margin-right: 20px;
+    height: 5vh;
+    width: auto;
+    cursor: pointer;
+  }
+
+  .title{
+    display: flex;
+    flex-direction: column;
+    margin-left: 1vw;
+    justify-content: center;
+
+    .name{
+      font-family: 'Alimama';
+      //flex-grow: 1;
+      font-size: 24px;
+      margin-bottom: 1vh;
+    }
+
+    .code{
+      font-family: 'Alimama';
+      font-size: 18px;
+      flex-grow: 0;
+    }
+  }
+
+
+
+  .search-box{
+    /* Layout Properties */
+    position: fixed;
+    width: 50vw;
+    height: 5vh;
+    left: 100px;
+    border-radius: 10vh;
+    margin-top: 1vh;
+    margin-left: 12vw;
+    /* UI Properties */
+    background: #a4d4e8 0 0 no-repeat padding-box;
+    background: linear-gradient(269deg, #CB8FE8 0%, #8FB6E8 100%);
+    box-shadow: inset 0 3px 6px #00000029;
+    opacity: 1;
+
+    input {
+      position: relative;
+      top: -2vh;
+      height: 5vh;
+      width: 80%;
+      text-align: left;
+      line-height: 5vh;
+
+      font: normal normal normal 2.1vh/1.46vw Geomanist;
+      background-color:transparent;
+      color: black;
+      border: 0;
+    }
+
+    button {
+      position: relative;
+      background: url("../../../../assets/icons/search.png") no-repeat;
+      background-size: 100%;
+      top: 1vh;
+      height: 5vh;
+      width: 1vh;
+      border: none;
+      margin: 0 1.5vw;
+      cursor: pointer;
+    }
+
+  }
+
+  .user{
+    flex-grow: 1;
+
+    .content{
+      position: relative;
+      float: right;
+      top: -1.5vh;
+      //width: 6vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-right: 20px;
+      //margin-bottom: 1.5vh;
+
+      .user-name{
+        text-align: center;
+        font-weight: bold;
+        cursor: pointer;
+        white-space: nowrap;
+        width: auto;
+
+        color: white;
+        text-shadow: 1px 1px 2px #c890e8;
+
+      }
+      img{
+        height: 6vh;
+        width: 6vh;
+        border-radius: 50%;
+        cursor: pointer;
+
+      }
+    }
+
+  }
+}
+
+.log-window{
+  background-color: #ffffffdd;
+  position: fixed;
+  width: 40vw;
+  height: 60vh;
+  margin: 10vh 30vw;
+  z-index: 200;
+  border-radius: 30px;
+  padding: 15px;
+
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+
+  form{
+    height: 30vh;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+
+    h2{
+      color: black;
+      font-size: larger;
+      font-family: 'Alimama'
+    }
+
+    .forms{
+      height: 20vh;
+      display:flex;
+      flex-direction: column;
+      align-items: end;
+      justify-content: space-evenly;
+    }
+  }
+
+  .form-toggle{
+    button{
+      border: none;
+      background: none;
+      color: #4d4de3;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  }
+
+}
+
+.overlay{
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* 半透明黑色 */
+  z-index: 100;
+}
+
+.hidden{
+  visibility:hidden
+}

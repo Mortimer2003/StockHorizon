@@ -5,8 +5,28 @@ import {Home} from "./pc/pages/Home";
 import {User} from "./pc/pages/User";
 import {Detail} from "./pc/pages/Detail";
 
+
 const mobileAgents = ["Android", "iPhone", "iPad", "iPod", "Symbian"];
 const userAgent = navigator.userAgent;
+
+global.UserSlice = {
+	isLogIn:true,
+	userId: "",
+	name:"user",
+	avatar:require("../assets/icons/user.png"),
+	phone:"",
+}
+
+window.onbeforeunload = function(event) {
+	// 将对象转换为 JSON 字符串并存储到本地存储中
+	localStorage.setItem('userData', JSON.stringify(global.UserSlice));
+}
+
+const savedData = localStorage.getItem('userData');
+if (savedData) {
+	global.UserSlice = JSON.parse(savedData);
+}
+
 
 export function Root() {
 	const [width, setWidth] = useState(window.innerWidth);
@@ -35,7 +55,8 @@ export function Root() {
 				<Route path='' element={<Home/>}/>
 				<Route path='/home' element={<Home/>}/>
 				<Route path='/user/:address' element={<User/>}/>
-				<Route path='/stock/:stockId' element={<Detail/>}/>
+				<Route path='/stock/:stockCode' element={<Detail/>}/>
 			</Routes>
+
 		</BrowserRouter>
 }

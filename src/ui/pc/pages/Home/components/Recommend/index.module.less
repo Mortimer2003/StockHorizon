@@ -1,0 +1,115 @@
+@recommend-width: 60vw;
+
+.recommend-container {
+  width: @recommend-width;
+  padding: 15px;
+  margin: 2vh 1.5vh 1.5vh 2vh;
+  border-radius: 30px;
+  background-color: rgba(255, 255, 255, 0.5);
+
+  .title {
+    width: @recommend-width - 1vw;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+
+    >span{
+      font-size: 20px;
+      font-family: 'Alimama';
+    }
+    .select{
+      display: flex;
+
+      span{
+        margin-right: 5px;
+      }
+
+      .current{
+        border: 1px solid white;
+        background-color: rgba(255, 255, 255, 0.5);
+        border-radius: 10vh;
+        font-weight: bold;
+      }
+
+      div {
+        padding: 0 5px;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .separate{
+    height:1px;
+    width: @recommend-width - 1vw;
+    background-color: #b8bcbb;
+    margin-bottom: 10px;
+  }
+
+  .recommend{
+    display: flex;
+    justify-content: space-between;
+
+
+    .line{
+      width:1px;
+      height: 250px;
+      background-color: #b8bcbb;
+      flex-shrink: 0;
+    }
+
+    .left,
+    .right{
+      width: (@recommend-width / 2) - 4vw;
+      margin-right: 1.5vw;
+
+      .sub-title{
+        padding-left: 16px;
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 15px;
+        font-size: 18px;
+      }
+
+      .page-buttons{
+        display: flex;
+        justify-content: center;
+        //cursor: pointer;
+        button{
+          background-color: transparent;
+          border: none;
+          cursor: pointer;
+        }
+        button:disabled{
+          color: rgba(0,0,0,0.2);
+        }
+      }
+
+      ol{
+
+        a{
+          height: 30px;
+          display: flex;
+          justify-content: space-between;
+          color: black;
+          text-decoration: none;
+
+          .name:hover{
+            font-weight: bold;
+          }
+          .degree{
+            font-weight: bold;
+          }
+        }
+
+        .separate{
+          height:0.5px;
+          width: (@recommend-width / 2) - 5vw;
+          background-color: #b8bcbb;
+          margin-bottom: 10px;
+          margin-left: -20px;
+        }
+      }
+
+    }
+  }
+}

@@ -1,0 +1,93 @@
+.user{
+  .content{
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+
+    top: 16vh;
+    padding-bottom: 40px;
+    position: relative;
+    color: white;
+    //background-color: #89FFFD;
+
+    .avatar{
+      width: 18vh;
+      height: 18vh;
+      overflow: hidden;
+      border-radius: 50%;
+      user-select: none;
+      img{
+        width:100%;
+        height:100%;
+        //transform: translate(-10%, -10%);
+        user-select: none;
+      }
+
+    }
+
+    .name{
+      font-size: 5vh;
+      font-weight: bolder;
+      //background: linear-gradient(269deg, #CB8FE8 0%, #8FB6E8 100%);
+      background-color: white;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: center;
+      user-select: none;
+      span{
+        user-select: none;
+      }
+    }
+
+    .tag{
+      font-size: 2vh;
+      font-family:Mark Pro;
+      color: #FFFFFF;
+      opacity: 0.59;
+    }
+
+
+    .sign{
+      font-size: 2vh;
+      text-align: center;
+      width: 50vw;
+      margin: 3vh 0;
+      opacity: 0.9;
+    }
+
+
+    .menu{
+      display: flex;
+      justify-content: center;
+
+      .current{
+        border: 1px solid white;
+        border-radius: 10vh;
+      }
+
+      .option {
+        //width: 10vh;
+        font-size: 2.1vh;
+        cursor: pointer;
+
+        margin: 3.9vh 1vw;
+        padding: 1.5vh 1vw;
+        white-space: nowrap;
+        //background-color: #B37775;
+      }
+
+      .item1::before,
+      .item2::before{
+        content: "";
+        display: inline-block;
+        height: 100%;
+        vertical-align: middle;
+      }
+    }
+  }
+
+
+
+}

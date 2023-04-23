@@ -1,0 +1,93 @@
+@recommend-width: 35vw;
+
+.hot-container {
+  width: @recommend-width; //TODO:待调整
+  //height: 40vh; //TODO:待调整
+  margin: 2vh 2vh 1.5vh 1.5vh;
+  border-radius: 30px;
+  background-color: rgba(255, 255, 255, 0.5);
+  padding: 15px;
+  overflow: visible;
+
+  .title {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+
+    > span {
+      font-size: 20px;
+      font-family: 'Alimama';
+    }
+
+    .select{
+      display: flex;
+
+      span{
+        margin-right: 5px;
+      }
+
+      .current{
+        border: 1px solid white;
+        background-color: rgba(255, 255, 255, 0.5);
+        border-radius: 10vh;
+        font-weight: bold;
+      }
+
+      div {
+        padding: 0 5px;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .separate{
+    height:1px;
+    width: 100%;
+
+    background-color: #b8bcbb;
+    margin: 5px 15px 5px 0;
+  }
+
+
+  ol{
+    margin-left: -20px;
+
+    a{
+      height: 30px;
+      display: flex;
+      justify-content: space-between;
+      color: black;
+      text-decoration: none;
+
+      .name:hover{
+        font-weight: bold;
+      }
+      .degree{
+        font-weight: bold;
+      }
+
+      .red span{
+        color: red;
+        //text-shadow: 1px 1px 2px #FFFFFF;
+      }
+      .green span{
+        color: green;
+        //text-shadow: 1px 1px 2px #FFFFFF;
+      }
+    }
+
+    .separate{
+      height:0.5px;
+      width: 105%;
+      background-color: #b8bcbb;
+      margin: -5px -20px 10px;
+    }
+
+  }
+
+
+}
+
+
+
