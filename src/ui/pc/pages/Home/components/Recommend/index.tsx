@@ -7,34 +7,9 @@ import {Types} from "aptos";
 import {Link} from "react-router-dom";
 import {StockRecom} from "../../../../../../modules/stock/StockSlice";
 import {stockMgr} from "../../../../../../modules/stock/StockManager";
+import dataTest from "../../../../../../../src/assets/data/recom-test.json";
 
 const s = makeStyle(style);
-
-let buyList:StockRecom[]=[
-    {name:"米哈游",code:"SZ000001",degree:10.0},
-    {name:"阿里巴巴",code:"SZ000002",degree:8.0},
-    {name:"腾讯",code:"SZ000003",degree:6.0},
-    {name:"华为",code:"SZ000004",degree:5.0},
-    {name:"百度",code:"SZ000005",degree:4.0},
-    {name:"小米",code:"SZ000003",degree:3.3},
-    {name:"bilibili",code:"SZ000004",degree:3.2},
-    {name:"网易",code:"SZ000005",degree:3.0},
-    {name:"格力",code:"SZ000001",degree:2.9},
-    {name:"富途",code:"SZ000002",degree:2.5},
-];
-
-let sellList:StockRecom[]=[
-    {name:"苹果",code:"SZ000001",degree:10.0},
-    {name:"微软",code:"SZ000002",degree:8.0},
-    {name:"亚马逊",code:"SZ000003",degree:6.0},
-    {name:"Google",code:"SZ000004",degree:5.0},
-    {name:"Meta",code:"SZ000005",degree:4.5},
-    {name:"英伟达",code:"SZ000003",degree:3.3},
-    {name:"IBM",code:"SZ000004",degree:3.2},
-    {name:"英特尔",code:"SZ000001",degree:2.9},
-    {name:"Adobe",code:"SZ000002",degree:2.5},
-    {name:"甲骨文",code:"SZ000005",degree:1.0},
-];
 
 //TODO：调用getStockRecom(type:RecomType,count:number,offset?:number),
 //     返回值设置buyList/sellList
@@ -43,16 +18,52 @@ let sellList:StockRecom[]=[
 
 
 export function Recommend() {
+    //TODO:测试数据集
+
+    // @ts-ignore
+    const [buyList,setBuyList]=useState<StockRecom[]>([
+        {name:"",code:"",degree:null},
+        {name:"",code:"",degree:null},
+        {name:"",code:"",degree:null},
+        {name:"",code:"",degree:null},
+        {name:"",code:"",degree:null},
+    ]);
+    // @ts-ignore
+    const [sellList,setSellList]=useState<StockRecom[]>([
+        {name:"",code:"",degree:null},
+        {name:"",code:"",degree:null},
+        {name:"",code:"",degree:null},
+        {name:"",code:"",degree:null},
+        {name:"",code:"",degree:null},
+    ]);
+
+    const [tagIdx, setTagIdx] = useState(0);
+
     useEffect(()=>{
-        stockMgr().getStockRecom(0,100,0).then((value)=>{
-            buyList=value.buyList;
-            sellList=value.sellList;
-        })
+        setBuyList(dataTest.buyList); //TODO:测试用,待删除
+        setSellList(dataTest.sellList); //TODO:测试用,待删除
+
+        function makeRequest() {
+            stockMgr().getStockRecom({type: tagIdx, offset: 0, count: 100, id:global.UserSlice.userId})
+                .then((value) => {
+
+                    console.log("getStockRecom return: " + value)
+                    setBuyList(value.buyList);
+                    setSellList(value.sellList);
+                })
+                .catch((reason) => {
+                    console.log("getStockRecom error: " + reason)
+                })
+        }
+
+        makeRequest();
+        setInterval(makeRequest, 60 * 60 * 1000);
+
     },[])
 
     //TODO:处理tag切换后的请求发起
 
-    const [tagIdx, setTagIdx] = useState(0);
+
     const menuNames=["全部","持有","收藏"]
 
     const handleMenuClick = (index, name) => {
@@ -90,16 +101,18 @@ export function Recommend() {
     return <div className={s("recommend-container")}>
         <div className={s("title")}>
             <span>投资建议：</span>
-            <div className={s("select")}>
-                <span>筛选:</span>
-                {menuNames.map((name, index) => (
-                    <div key={index}
-                         onClick={() => handleMenuClick(index, name)}
-                         className={s(`item${index+1}`, tagIdx == index && "current")}>
-                        {name}
-                    </div>
-                ))}
-            </div>
+            {global.UserSlice.isLogIn &&
+                <div className={s("select")}>
+                    <span>筛选:</span>
+                    {menuNames.map((name, index) => (
+                        <div key={index}
+                             onClick={() => handleMenuClick(index, name)}
+                             className={s(`item${index+1}`, tagIdx == index && "current")}>
+                            {name}
+                        </div>
+                    ))}
+                </div>
+            }
         </div>
         <div className={s("separate")}></div>
         <div className={s("recommend")}>
@@ -113,7 +126,7 @@ export function Recommend() {
                         <li>
                             <Link to={`/stock/${item.code}`} className={s("rank-link")}>
                                 <span className={s("name")}>{item.name}</span>
-                                <span className={s("degree")}>{item.degree.toFixed(1)}</span>
+                                <span className={s("degree")}>{item.degree?.toFixed(2)}</span>
                             </Link>
                         </li>
                         <div className={s("separate")}></div>
@@ -141,7 +154,7 @@ export function Recommend() {
                         <li>
                             <Link to={`/stock/${item.code}`} className={s("rank-link")}>
                                 <span className={s("name")}>{item.name}</span>
-                                <span className={s("degree")}>{item.degree.toFixed(1)}</span>
+                                <span className={s("degree")}>{item.degree?.toFixed(2)}</span>
                             </Link>
                         </li>
                         <div className={s("separate")}></div>

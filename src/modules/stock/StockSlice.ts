@@ -7,6 +7,18 @@ export enum RecomType {
     "全部", "持有", "收藏"
 }
 
+export type Recom = {
+    strategy: number,
+    degree: number
+}
+
+export type Collect = {
+    stockCode : string,
+    name : string,
+    strategy : number,
+    degree : number
+}
+
 export type StockRecom = {
     name:string,
     code:string,
@@ -18,28 +30,28 @@ export type StockInfo = {
     code:string,
 }
 
-export type RTData = {
+export type RTP = {
     price: string,
     abChange: string,
     reChange: string
 }
 
 export type StockDatas = {
-    "今开":string,
-    "昨收":string,
-    "最高":string,
-    "最低":string,
-    "成交量":string,
-    "成交额":string,
-    "换手率":string,
-    "市盈(TTM)":string,
-    "市净率":string,
-    "流通值":string,
-    "流通股":string,
-    "总市值":string,
-    "总股本":string,
-    "52周高":string,
-    "52周低":string,
+    todayOpen:string,
+    yesterdayClose:string,
+    highest:string,
+    lowest:string,
+    volume:string,
+    amount:string,
+    turnoverRate:string,
+    ttm:string,
+    per:string,
+    circulationMarketValue:string,
+    circulatingShares:string,
+    mcap:string,
+    zgb:string,
+    ww52Highest:string,
+    ww52Lowest:string,
 }
 
 export type StockPrice = [date:string, open:number, close:number, lowest:number, highest:number, volume:number];
@@ -59,10 +71,11 @@ export type StockNews = {
 }
 
 export type StockEnterprise = {
-    "简介":string,
-    "公司网站":string,
-    "公司地址"?:string,
-    "公司电话"?:string
+    name:string, //TODO:name处理
+    introduction:string,
+    web:string,
+    address?:string,
+    phone?:string
 }
 
 export type StockNewsAbout = {
@@ -76,12 +89,14 @@ export type StockNewsAbout = {
 
 //将时间戳转化为日期字符串：
 export function TimestampToTime(timestamp:string){
-    // 时间戳，单位为毫秒 timestamp = 1617681835000;
+    // 时间戳，单位为毫秒 timestamp = "1617681835000";
     // 创建一个Date对象，并将时间戳作为参数传入
-    const date = new Date(timestamp);
+    const date = new Date(Number(timestamp));
+    // console.log(date)
     // 调用Date对象的toLocaleString方法，将其转化为本地日期字符串
     return date.toLocaleString(); // 返回：2021/4/6 上午11:10:35
 }
+
 
 
 //将日期字符串转化为时间戳：

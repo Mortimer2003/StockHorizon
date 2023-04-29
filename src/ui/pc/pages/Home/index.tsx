@@ -15,10 +15,10 @@ import {Hot} from "./components/Hot";
 const s = makeStyle(style);
 
 
-export function Home() {
+export function Home(props) {
 
     return <div className={s('home')}>
-        <Navigation/>
+        <Navigation page={"home"} /*searchResult={props.searchResult} setSearchResult={props.setSearchResult}*//>
 
         <div className={s('content')}>
             <div className={s("top")}>

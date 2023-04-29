@@ -1,21 +1,24 @@
 .user{
   .content{
     width: 100vw;
+    height: 70vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
 
-    top: 16vh;
+    //top: 16vh;
+    padding-top:16vh;
     padding-bottom: 40px;
     position: relative;
     color: white;
+    overflow-y: auto;
     //background-color: #89FFFD;
 
     .avatar{
       width: 18vh;
       height: 18vh;
-      overflow: hidden;
+      //overflow: hidden;
       border-radius: 50%;
       user-select: none;
       img{
@@ -63,13 +66,15 @@
       justify-content: center;
 
       .current{
-        border: 1px solid white;
+        border: 1px solid rgba(255,255,255,0.8);
         border-radius: 10vh;
+        background-color: rgba(0,0,0,0.05);
       }
 
       .option {
         //width: 10vh;
-        font-size: 2.1vh;
+        font-size: 16px;
+        font-weight: bold;
         cursor: pointer;
 
         margin: 3.9vh 1vw;
@@ -87,7 +92,85 @@
       }
     }
   }
+  ::-webkit-scrollbar {
+    display: none;
+  }
 
+}
 
+.collected{
+  //display: flex;
+  //background-color: rgba(255,255,255,0.2);
+  background-color: rgba(0,0,0,0.1);
+  border-radius: 20px;
 
+  .title{
+    display: flex;
+    height: 50px;
+    line-height: 50px;
+    font-weight: bold;
+    background-color: rgba(0,0,0,0.1);
+    border-radius: 20px 20px 0 0;
+
+    >div{
+      width:100px;
+    }
+  }
+
+  .line{
+    background-color: #FFFFFF;
+    height: 1px;
+    width: 500px;
+  }
+
+  .line2{
+    background-color:rgba(255,255,255,0.3) ;
+    height: 1px;
+    margin:auto;
+    width: 480px;
+  }
+
+  .item{
+    display: flex;
+
+    >div{
+      display: flex;
+      flex-direction: column;
+      width:100px;
+      height: 50px;
+      justify-content: space-evenly;
+    }
+
+    .name{
+      font-size: 16px;
+    }
+    .code{
+      font-size: 10px;
+    }
+    .price{
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .strategy{
+    }
+    .degree{
+    }
+
+  }
+
+  //>div{
+  //  margin: 10px;
+  //
+  //  .item{
+  //    height: 50px;
+  //  }
+  //}
+}
+
+.green{
+  color: rgba(0, 255, 0, 0.6);
+}
+
+.red{
+  color: rgba(255, 0, 0, 0.6);
 }

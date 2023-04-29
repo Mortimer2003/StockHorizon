@@ -1,7 +1,8 @@
 import style from "./index.module.css";
 import {makeStyle} from "../../../../utils/CSSUtils";
 import React, {useCallback, useEffect, useMemo, useRef, useState, CSSProperties, Fragment} from "react";
-// import {uiSlice} from "../../../../modules/ui/UISlice";
+
+import {upload} from "@testing-library/user-event/dist/upload";
 
 const s = makeStyle(style);
 
@@ -30,10 +31,12 @@ const Form = (props: FormProps) => {
     )
 }
 
-export interface FormItemProps<T, K extends string> {
+export interface FormItemProps<T extends Blob | string | number | boolean | any, K extends string> {
     prop?: K
     value: T
+    className?: string
     onChange?: (value: T, prop: K) => any
+    onBlur?: (value: T, prop: K) => any
     disabled?: boolean
     style?: CSSProperties | undefined
 }
@@ -45,6 +48,7 @@ export interface FormInputProps<
     type?: 'text' | 'number' | 'password' | 'email'
     placeholder?: string
     maxLength?: number
+    maxNumber?: string
     prefix?: string
 }
 
@@ -74,19 +78,44 @@ const FormInput = <T extends string | number, K extends string>(
         },
         [props.onChange, props.prop, valueType]
     );
+    const onBlur = useCallback(
+        (e: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
+            switch (valueType) {
+                case 'number':
+                    props.onBlur?.(
+                        (e.currentTarget.value ? parseInt(e.currentTarget.value) : 0) as T,
+                        props.prop
+                    );
+                    break;
+                case 'string':
+                    props.onBlur?.(e.currentTarget.value as T, props.prop);
+                    break;
+                default:
+                    throw new Error('[FormInput] unsupported generic type');
+            }
+        },
+        [props.onBlur, props.prop, valueType]
+    );
     return (
         <div className={s('form-input')}
-        style={props.multiline ? {height: 'initial', ...props.style} : props.style}>
-            <label>
-                {props.label && <span className={s('label')}>{props.label}</span>}
-                {!props.multiline ?
-                <input className={s('input')} type={inputType} name={props.label}
-                value={props.value+''} placeholder={props.placeholder} disabled={props.disabled}
-                maxLength={props.maxLength} onChange={onChange} prefix={props.prefix}/> :
-                <textarea className={s('textarea')} name={props.label}
-                value={props.value+''} placeholder={props.placeholder} disabled={props.disabled}
-                maxLength={props.maxLength} onChange={onChange} prefix={props.prefix}/>}
-            </label>
+             style={props.multiline ? {height: 'initial', ...props.style} : props.style}>
+            {/*<label>*/}
+            {/*  {props.label && <span className={s('label')}>{props.label}</span>}*/}
+            {/*  {!props.multiline ?*/}
+            {/*    <input className={s('input')} type={inputType} name={props.label}*/}
+            {/*           value={props.value+''} placeholder={props.placeholder} disabled={props.disabled}*/}
+            {/*           maxLength={props.maxLength} onChange={onChange} onBlur={onBlur} prefix={props.prefix}/> :*/}
+            {/*    <textarea className={s('textarea')} name={props.label}*/}
+            {/*              value={props.value+''} placeholder={props.placeholder} disabled={props.disabled}*/}
+            {/*              maxLength={props.maxLength} onChange={onChange} onBlur={onBlur} prefix={props.prefix}/>}*/}
+            {/*</label>*/}
+            {!props.multiline ?
+                <input className={s('input', props.className)} type={inputType} name={props.label}
+                       value={props.value+''} placeholder={props.placeholder} disabled={props.disabled}
+                       maxLength={props.maxLength} onChange={onChange} onBlur={onBlur} prefix={props.prefix}/> :
+                <textarea className={s('textarea', props.className)} name={props.label}
+                          value={props.value+''} placeholder={props.placeholder} disabled={props.disabled}
+                          maxLength={props.maxLength} onChange={onChange} onBlur={onBlur} prefix={props.prefix}/>}
         </div>
     )
 }
@@ -115,7 +144,7 @@ const FormSelect = <K extends string>(props: FormSelectProps<K>) => {
             list[key] = list.hasOwnProperty(key) ? [...list[key], item] : [item];
         }
         return list;
-        },[props.options]);
+    },[props.options]);
     const onSelect = useCallback(
         (group: string, index: number) => {
             props.onChange?.(sortedOptions[group][index].value, props.prop);
@@ -124,7 +153,7 @@ const FormSelect = <K extends string>(props: FormSelectProps<K>) => {
 
     return (
         <div className={s('form-select')} style={props.style}
-        onClick={() => {if(props.disabled) return setIsExpanded(!isExpanded);}}>
+             onClick={() => !props.disabled && setIsExpanded(!isExpanded)}>
             <div className={s('main')}>
                 {currentItem && <span>{currentItem.label}</span>}
             </div>
@@ -235,23 +264,25 @@ const FormDateTimePicker = <K extends string>(
     );
     return (
         <input className={s('form-date-time-picker')}
-        style={props.style} type="datetime-local" value={formattedTime}
-        disabled={props.disabled} onChange={onChange}/>
+               style={props.style} type="datetime-local" value={formattedTime}
+               disabled={props.disabled} onChange={onChange}/>
     )
 }
 
-interface FormImageUploaderProps<K extends string>extends FormItemProps<Blob, K> {
+interface FormImageUploaderProps<K extends string>extends FormItemProps<Blob | string, K> {
     tips?: string
     radius?: string
     fit?: 'cover' | 'contain'
     imgUrl?: string | (() => Promise<string>)
     maxSize?: number
+    isAvatar?: boolean
+    imgClassName?: string
 }
 
 const FormImageUploader = <K extends string>(
     props: FormImageUploaderProps<K>
 ) => {
-    const [imgUrl, setImgUrl] = useState<string>();
+    const [imgUrl, setImgUrl] = useState<string | undefined>();
     useEffect(() => {
         if(props.imgUrl == null) return;
         if(typeof props.imgUrl == 'string') setImgUrl(props.imgUrl);
@@ -259,41 +290,82 @@ const FormImageUploader = <K extends string>(
     },[props.imgUrl]);
     useEffect(() => {
         if(!props.value) return;
-        const reader = new FileReader();
-        reader.readAsDataURL(props.value);
-        reader.onload = () => {
-            setImgUrl(reader.result as string);
-        };
+        if(typeof props.value === 'string') {
+            setImgUrl(props.value)
+        }else {
+            const reader = new FileReader();
+            reader.readAsDataURL(props.value);
+            reader.onload = () => {
+                setImgUrl(reader.result as string);
+            };
+        }
     },[props.value]);
 
     const fileInput = useRef<any>();
     const onClick = () => !props.disabled && fileInput.current.click();
-    const onChange = useCallback((e) => {
+    const onChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const mb = 1024 * 1024;
         const file = e.target.files[0];
         const maxSize = props.maxSize || 5 * mb;
 
-        // if(file.size > maxSize)
-        //     uiSlice.setError(`File size must smaller than ${maxSize / mb}MB!`);
-        // else props.onChange?.(file, props.prop);
+        if (file.size <= maxSize)
+            props.onChange?.(file, props.prop);
+        console.log("success")
     },[]);
+    // const onChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    //   const mb = 1024 * 1024;
+    //   const file = e.target.files[0];
+    //   const maxSize = props.maxSize || 5 * mb;
+    //
+    //   if (file.size > maxSize)
+    //     uiSlice.setError(`File size must smaller than ${maxSize / mb}MB!`);
+    //   else {
+    //     if (typeof props.value === 'string') {
+    //       // If `value` is a string, assume it's the URL of the current image.
+    //       // Upload the new file and call `onChange` with the new URL.
+    //       const formData = new FormData();
+    //       formData.append('file', file);
+    //       uploadFile(formData).then((res) => {
+    //         const newUrl = res.data.url;
+    //         props.onChange?.(newUrl, props.prop);
+    //         setImgUrl(newUrl);
+    //       });
+    //     } else {
+    //       // If `value` is a Blob, call `onChange` with the new Blob.
+    //       props.onChange?.(file, props.prop);
+    //       const reader = new FileReader();
+    //       reader.readAsDataURL(file);
+    //       reader.onload = () => {
+    //         setImgUrl(reader.result as string);
+    //       };
+    //     }
+    //   }
+    // },[props.value, props.prop, props.onChange]);
 
 
-    return <div className={s('form-image-uploader')} style={props.style}>
+    return <div className={s('form-image-uploader', props.className)} style={props.style}>
         <input type="file" ref={fileInput} onChange={onChange}
-        style={{display: 'none'}} accept=".png, .jpg, .jpeg"/>
-        {imgUrl ? (
-            <img onClick={onClick} className={s('img')} style={{
+               style={{display: 'none'}} accept=".png, .jpg, .jpeg"/>
+        {imgUrl != null ? (
+            <img onClick={onClick} className={s(props.imgClassName)} style={{
                 cursor: props.disabled ? 'not-allowed' : 'pointer',
                 borderRadius: props.radius || '50%',
                 objectFit: props.fit || 'contain'
             }} src={imgUrl}/>
         ) : (<>
-            <div onClick={onClick} className={s('circle')}
-                 style={{marginBottom: props.tips ? '12px' : '0'}}>
-                <img className={s('logo')} src={require("./upload-icon.png")}/>
-            </div>
-            <span className={s('tips')}>{props.tips}</span>
+            {props.isAvatar ?
+                <>
+                    <img onClick={onClick} className={s('avatar')} src={require("./upload-icon.png")}/>
+                </> :
+                <>
+                    <div onClick={onClick} className={s('circle')}
+                         style={{marginBottom: props.tips ? '12px' : '0'}}>
+                        <img className={s('logo')} src={require("./upload-icon.png")}/>
+                    </div>
+                    <span className={s('tips')}>{props.tips}</span>
+                    <span className={s('tip1')}>Click to upload</span>
+                    <span className={s('tip2')}>PNG, JPG, JPEG supported</span>
+                </>}
         </>)}
     </div>
 }

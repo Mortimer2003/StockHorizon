@@ -4,6 +4,8 @@
   .content{
     display: flex;
     flex-direction: column;
+    overflow-y: scroll;
+    height: 90vh;
 
     .top{
       display: flex;
@@ -22,6 +24,10 @@
     }
 
 
+  }
+
+  ::-webkit-scrollbar {
+    display: none;
   }
 
 }

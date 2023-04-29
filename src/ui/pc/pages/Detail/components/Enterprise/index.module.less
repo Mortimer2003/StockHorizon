@@ -20,11 +20,23 @@
   }
 
   .intro{
-    display: -webkit-box;
-    -webkit-line-clamp: 5;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    //display: -webkit-box;
+    //-webkit-line-clamp: 5;
+    //-webkit-box-orient: vertical;
+    //overflow: hidden;
+    //text-overflow: ellipsis;
+    max-height: 144px;
+    overflow: auto;
+  }
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  a:hover{
+    background: linear-gradient(269deg, #CB8FE8 0%, #8FB6E8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 }
 

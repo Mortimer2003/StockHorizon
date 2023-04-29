@@ -4,7 +4,8 @@
   width: 100vw; //TODO:待修改
   height: 8vh;
   padding-top: 2vh;
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 3px 3px #00000029;
 
   .home-icon{
     position: relative;
@@ -100,29 +101,73 @@
       //width: 6vh;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      align-items: end;
+      justify-content: end;
       margin-right: 20px;
       //margin-bottom: 1.5vh;
 
-      .user-name{
-        text-align: center;
-        font-weight: bold;
-        cursor: pointer;
+      .user{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-right: 20px;
+
+        .user-name{
+          text-align: center;
+          font-weight: bold;
+          cursor: pointer;
+          white-space: nowrap;
+          width: auto;
+
+          color: white;
+          text-shadow: 1px 1px 2px #c890e8;
+
+        }
+        img{
+          height: 50px;
+          width: 50px;
+          border-radius: 50%;
+          cursor: pointer;
+
+        }
+      }
+
+      .user-menu {
+        margin-top: 0vh;
+        //width: 15vh;
+        //height: 10vh;
+        border-radius: 1vh;
+        z-index: 100;
+        display: block;
         white-space: nowrap;
-        width: auto;
 
         color: white;
-        text-shadow: 1px 1px 2px #c890e8;
+        font-weight: bold;
+        font-size: 12px;
+        background-color: rgba(0, 0, 0, 0.5);
 
+        .option {
+          margin: 5px;
+          padding: 5px;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          svg {
+            width: 14px;
+            height: 14px;
+            object-fit: contain;
+            margin-right: 0.5vw;
+          }
+        }
+        .option:hover{
+          border-radius: 0.5vh;
+          background-color: rgba(0, 0, 0, 0.5);
+          cursor: pointer;
+        }
       }
-      img{
-        height: 6vh;
-        width: 6vh;
-        border-radius: 50%;
-        cursor: pointer;
 
-      }
+
     }
 
   }
@@ -162,16 +207,31 @@
       flex-direction: column;
       align-items: end;
       justify-content: space-evenly;
+
+      input{
+        border-color: white;
+      }
+    }
+
+    button{
+      color: white;
+      background: linear-gradient(269deg, #CB8FE8 0%, #8FB6E8 100%);
+      border:none;
+      border-radius: 5px;
     }
   }
 
   .form-toggle{
     button{
       border: none;
-      background: none;
-      color: #4d4de3;
-      text-decoration: underline;
+      //background: none;
+      //color: #4d4de3;
+      //text-decoration: underline;
       cursor: pointer;
+      font-weight: bold;
+      background: linear-gradient(269deg, #CB8FE8 0%, #8FB6E8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
   }
 

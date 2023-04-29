@@ -7,6 +7,8 @@ import {Types} from "aptos";
 import {Navigation} from "../../components/Navigation";
 import {useParams} from "react-router-dom";
 import {userMgr} from "../../../../modules/user/UserManager";
+import {stockMgr} from "../../../../modules/stock/StockManager";
+import {Collect} from "../../../../modules/stock/StockSlice";
 //import  "../../../../modules/user/UserSlice";
 
 const s = makeStyle(style);
@@ -14,29 +16,130 @@ const s = makeStyle(style);
 //TODO: 调用EditUserInfo接口，添加编辑用户信息功能
 
 
-export function Own({id}) {
+export function Collected({id,list}:{id:string,list:Collect[]}) {
+    const stockCode = list.map(obj => obj.stockCode);
+    // const name = list.map(obj => obj.name);
+    // const strategy = list.map(obj => obj.strategy);
+    // const degree = list.map(obj => obj.degree);
+
+    function RTP(index) {
+        const [stockRTP,setStockRTP] = useState({
+            price: "",
+            abChange: "",
+            reChange: "",
+        })
+        const [color,setColor] = useState("")
+
+        useEffect(()=>{
+            function makeRequest() {
+
+                //TODO:测试用，待删除
+                const value1={
+                    price: "$110.00",
+                    abChange: "+0.12",
+                    reChange: "+0.31%",
+                }
+                const value2={
+                    price: "$100.00",
+                    abChange: "-0.11",
+                    reChange: "-0.21%",
+                }
+                index==0?setStockRTP(value1):setStockRTP(value2)
+                // Number(value1.abChange)==0?setColor("")
+                //     :Number(value1.abChange)>0?setColor("red"):setColor("green")
+
+
+                stockMgr().getRTP({stockCode:stockCode[index]}).then((value) => {
+                    console.log("get RTP return: " + value)
+                    setStockRTP(value);
+                    Number(value.abChange)==0?setColor("")
+                    :Number(value.abChange)>0?setColor("red"):setColor("green")
+                }).catch((reason) => {
+                    console.log("get RTP error: " + reason)
+                });
+
+            }
+
+            makeRequest();
+            const timer = setInterval(makeRequest, 60 * 1000);
+            return () => {
+                clearInterval(timer);
+            };
+        },[])
+
+        return <>
+            <div className={s("price",color)}>{stockRTP?.price}</div>
+            <div className={s(color)}>
+                <div>{stockRTP?.abChange}</div>
+                <div>{stockRTP?.reChange}</div>
+            </div>
+        </>
+    }
+
+
+    return <>
+            <div className={s("title")}>
+                <div>名称</div>
+                <div>当前价</div>
+                <div>涨跌幅度</div>
+                <div>推荐策略</div>
+                <div>推荐度</div>
+            </div>
+            <div className={s("line")}></div>
+            <div>
+                <div>{list.map(({name,stockCode,strategy,degree},index)=>
+                    <>
+                        {index!==0 && <div className={s("line2")}></div>}
+                        <div className={s("item")}>
+                            <div>
+                                <div className={s("name")}>{name}</div>
+                                <div className={s("code")}>{stockCode}</div>
+                            </div>
+                            <RTP index={index}/>
+                            <div className={s("strategy")}>{strategy==0?"推荐卖出":"推荐买入"}</div>
+                            <div className={s("degree")}>{degree}</div>
+                        </div>
+                    </>
+                )}</div>
+            </div>
+    </>
+}
+
+export function Hold({id,list}:{id:string,list:Collect[]}) {
+
     return <></>
 }
 
-export function Collected({id}) {
-    return <></>
-}
 
+export function User(props) {
+    const [pageIdx, setPageIdx] = useState(0);
 
-export function User() {
-
+    const [collectList, setCollectList] = useState<{collect:Collect[],hold:Collect[]}>({
+        collect:[{
+            stockCode : "",
+            name : "",
+            strategy : null,
+            degree : null,
+        }],
+        hold:[{
+            stockCode : "",
+            name : "",
+            strategy : null,
+            degree : null,
+        }],
+    });
 
     const {id} = useParams<{ id: string }>() // 目标Address
 
-    const [pageIdx, setPageIdx] = useState(0);
+
 
     const menuNames=["持有","收藏"]
-    const page = useMemo(() => {
-        switch (pageIdx) {
-            case 0: return <Own id={id}/>
-            case 1: return <Collected id={id}/>
-        }
-    }, [pageIdx]);
+    // let page = useMemo(() => {
+    //     switch (pageIdx) {
+    //         case 0: return <Collected id={id} list={collectList.hold}/>
+    //         case 1: return <Collected id={id} list={collectList.collect}/>
+    //     }
+    // }, [pageIdx]);
 
     const handleMenuClick = (index, name) => setPageIdx(index);
 
@@ -66,13 +169,11 @@ export function User() {
     }
 
     const changeName = (event) => {
-        //TODO:补充昵称提交
         event.preventDefault();
 
         const ele = document.getElementById('user-name');
         ele.contentEditable = 'true';
         ele.focus();
-
 
         // 添加keydown事件监听器
         ele.addEventListener('keydown', function (event) {
@@ -95,12 +196,76 @@ export function User() {
         });
     }
 
+    useEffect(()=>{
+
+        //TODO:测试用，待删除
+        const value={
+            collect:[
+                {
+                    stockCode : "1",
+                    name : "n1",
+                    strategy : 0,
+                    degree : 10,
+                },
+                {
+                    stockCode : "2",
+                    name : "n2",
+                    strategy : 1,
+                    degree : 8,
+                }],
+            hold:[
+                {
+                    stockCode : "SZ000001",
+                    name : "测试名称",
+                    strategy : 1,
+                    degree : 9,
+                },
+                {
+                    stockCode : "4",
+                    name : "n4",
+                    strategy : 0,
+                    degree : 6,
+                },{
+                    stockCode : "SZ000001",
+                    name : "测试名称",
+                    strategy : 1,
+                    degree : 9,
+                },
+                {
+                    stockCode : "4",
+                    name : "n4",
+                    strategy : 0,
+                    degree : 6,
+                },{
+                    stockCode : "SZ000001",
+                    name : "测试名称",
+                    strategy : 1,
+                    degree : 9,
+                },
+                {
+                    stockCode : "4",
+                    name : "n4",
+                    strategy : 0,
+                    degree : 6,
+                }],
+        }
+        setCollectList(value);//TODO:测试用，待删除
+
+        stockMgr().getCollect({id}).then((value) => {
+            console.log("getCollect return: " + value)
+            // @ts-ignore
+            setCollectList(value);
+        }).catch((reason) => {
+            console.log("getCollect error: " + reason)
+        });
+
+    },[pageIdx])
 
     return <div className={s('user')}>
         <Navigation page={"user"}/>
         <div className={s('content')}>
             <div className={s("avatar")}>
-                <img onDoubleClick={changeAvatar} src={global.UserSlice.avatar /*|| require("../../../../assets/test/avatar.jpg")*/}/>
+                <img onDoubleClick={changeAvatar} src={global.UserSlice.avatar}/>
             </div>
             <div className={s("name")}><span onDoubleClick={changeName} id={"user-name"}>{global.UserSlice.name}</span></div>
 
@@ -114,7 +279,9 @@ export function User() {
                     </div>
                 ))}
             </div>
-            <div> {page} </div>
+            <div className={s("collected")}>
+                 <Collected id={id} list={pageIdx==0?collectList.hold:collectList.collect}/>
+            </div>
         </div>
     </div>
 }

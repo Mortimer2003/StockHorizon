@@ -5,11 +5,12 @@
   border-radius: 30px;
   background-color: rgba(255, 255, 255, 0.5);
   padding: 15px;
+  //padding-right: 2vw;
   overflow: hidden;
   //position: relative;
 
   .title {
-    width: 32vw;
+    width: 100%;
     display: flex;
     justify-content: space-between;
     margin-bottom: 10px;
@@ -18,21 +19,52 @@
       font-size: 20px;
       font-family: 'Alimama';
     }
+
+    div{
+      display: flex;
+
+      button{
+        width: 50px;
+        background-color: rgba(255,255,255,0.5);
+        margin-right: 5px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        box-shadow: 0 3px 3px #00000029;
+      }
+    }
   }
 
-  .RT-data{
+  .top{
     display: flex;
+    justify-content: space-between;
     align-items: end;
 
-    span{
-      display: inline-block;
-      margin: 0 5px 5px;
-      font-size: 25px;
-      font-weight: bold;
+    .RT-data{
+      display: flex;
+      align-items: end;
+
+      span{
+        display: inline-block;
+        margin: 0 5px 5px;
+        font-size: 25px;
+        font-weight: bold;
+      }
+      .RT-price{
+        font-size: 30px;
+        margin-left: 10px;
+      }
     }
-    .RT-price{
-      font-size: 30px;
-      margin-left: 10px;
+
+    .recom{
+      margin-bottom: 5px;
+      margin-right: 5px;
+      font-size: 24px;
+      font-weight: bold;
+      border-color: white;
+      background: linear-gradient(269deg, #CB8FE8 0%, #8FB6E8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
   }
 
@@ -43,6 +75,7 @@
 
     tr{
       display: flex;
+      justify-content: space-between;
       width: auto;
 
       td{
@@ -51,6 +84,7 @@
         display: flex;
         justify-content: space-between;
         font-size: 14px;
+        white-space: nowrap;
 
       }
 

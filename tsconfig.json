@@ -21,7 +21,10 @@
     "noEmit": true,
     "experimentalDecorators": true,
     "jsx": "react-jsx",
-    "downlevelIteration": true
+    "downlevelIteration": true,
+    "compilerOptions": {
+      "types": ["highcharts"]
+    }
   },
   "include": [
     "src"

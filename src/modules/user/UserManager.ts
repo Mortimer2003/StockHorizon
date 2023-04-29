@@ -6,48 +6,51 @@ import {asyncTask, BaseAsyncTaskManager} from "../redux/BaseAsyncTaskManager";
 import {getManager, manager} from "../../app/BaseManager";
 import {get, post, put} from "../http/NetworkManager";
 
-export const CreateUser = post<
+export const CreateUser = get<
     { phone:string, password: string },
     { state:boolean, id?:string}
     >("/api/user/create")
 
-export const LogInUser = post<
+export const LogInUser = get<
     { phone:string, password: string },
     { state:boolean, id?:string}
-    >("/api/stock/logIn")
+    >("/api/user/login")
 
 export const GetUserInfo = get<
     { id:string },
     { name:string, phone:string, avatarUrl:string}
-    >("/api/user/:id")
+    >("/api/user/info")
 
-export const EditUserInfo = put<
-    { id:string, name?:string, avatar?:FormData },
+export const EditUserInfo = get<
+    { id:string, name?:string},
     { state:boolean }
-    >("/api/user/:id")
+    >("/api/user/editInfo")
+
 
 
 @manager
 export class UserManager extends BaseAsyncTaskManager {
 
     @asyncTask
-    public async createUser(phone:string, password: string) {
-        return await CreateUser({phone,password});
+    public async createUser(params:{phone:string, password: string}) {
+        return await CreateUser(params);
     }
 
     @asyncTask
-    public async logInUser(phone:string, password: string) {
-        return await LogInUser({phone,password});
+    public async logInUser(params:{phone:string, password: string}) {
+        console.log(params)
+
+        return await LogInUser(params);
     }
 
     @asyncTask
-    public async getUserInfo(id: string) {
-        return await GetUserInfo({id});
+    public async getUserInfo(params:{id: string}) {
+        return await GetUserInfo(params);
     }
 
     @asyncTask
     public async editUserInfo(edit:{id:string, name?:string, avatar?:FormData}) {
-        return await EditUserInfo(edit);
+        return await EditUserInfo({id:edit.id, name:edit.name});
     }
 
 }

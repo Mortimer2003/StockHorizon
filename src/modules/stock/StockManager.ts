@@ -6,6 +6,8 @@ import {asyncTask, BaseAsyncTaskManager} from "../redux/BaseAsyncTaskManager";
 import {getManager, manager} from "../../app/BaseManager";
 import {get, post, put} from "../http/NetworkManager";
 import {
+    Collect,
+    Recom,
     RecomType,
     StockDatas,
     StockEnterprise,
@@ -17,7 +19,7 @@ import {
 } from "./StockSlice"
 
 export const GetRecom = get<
-    { type:RecomType, offset?: number, count: number },
+    { type:number, offset?: number, count: number, id: string },
     { buyList:StockRecom[],sellList:StockRecom[]}
     >("/api/stock/recom")
 
@@ -31,58 +33,82 @@ export const GetNews = get<
     { newsList:StockNews[] }
     >("/api/stock/news")
 
-export const GetStockDetail = get<
+export const GetRTP = get<
     { stockCode:string },
-    { stockData:StockDatas, priceLibrary:StockPrice[]}
-    >("/api/stock/:stockCode/data")
+    { price:string, abChange:string, reChange:string}
+    >("/api/stock/rtp")
+
+export const GetStockDetail = get<
+    { stockCode:string , id:string},
+    {
+        stockData:StockDatas,
+        priceLibrary:StockPrice[],
+        recommend:Recom,
+        isCollected:{collect:boolean,hold:boolean}
+    }
+    >("/api/stock/detail/data")
 
 export const GetEnterprise = get<
     { stockCode:string },
     { enterpriseInfo:StockEnterprise }
-    >("/api/stock/:stockCode/enterprise")
+    >("/api/stock/detail/enterprise")
 
 export const GetNewsAbout = get<
-    { stockCode:string, limit:number, count:number, page:number },
+    { stockCode:string, limit:number, offset:number, count:number },
     { newsList: StockNewsAbout[]}
-    >("/api/stock/:stockCode/news")
+    >("/api/stock/detail/news")
 
 export const SearchStock = get<
     { query:string },
-    { stockCode: string }
-    >("/api/stock/:query")
+    { stockCode: string, name: string }
+    >("/api/stock/search")
 
+export const CollectStock = get<
+    { id:string, stockCode:string, type:number},
+    { state: number }
+    >("/api/user/collect")
+
+export const GetCollect = get<
+    { id:string },
+    { collectList:Collect[], holdList:Collect[] }
+    >("/api/user/getCollect")
 
 @manager
 export class StockManager extends BaseAsyncTaskManager {
 
     @asyncTask
-    public async getStockRecom(type: RecomType, count: number, offset?: number) {
-        return await GetRecom({type, offset, count});
+    public async getStockRecom(params:{type: number, offset?: number, count: number, id: string}) {
+        return await GetRecom(params);
     }
 
     @asyncTask
-    public async getHot(length: number, type: number, limit: number) {
-        return await GetHot({length, type, limit});
+    public async getHot(params:{length: number, type: number, limit: number}) {
+        return await GetHot(params);
     }
 
     @asyncTask
-    public async getNews(limit: number, count: number, offset?: number) {
-        return await GetNews({offset, limit, count});
+    public async getNews(params:{offset?: number, limit: number, count: number}) {
+        return await GetNews(params);
     }
 
     @asyncTask
-    public async getStockDetail(stockCode: string) {
-        return await GetStockDetail({stockCode});
+    public async getRTP(params:{stockCode: string}) {
+        return await GetRTP(params);
     }
 
     @asyncTask
-    public async getEnterprise(stockCode: string) {
-        return await GetEnterprise({stockCode});
+    public async getStockDetail(params:{stockCode: string, id:string}) {
+        return await GetStockDetail(params);
     }
 
     @asyncTask
-    public async getNewsAbout(stockCode: string, limit: number, count: number, page: number) {
-        return await GetNewsAbout({stockCode, limit, count, page});
+    public async getEnterprise(params:{stockCode: string}) {
+        return await GetEnterprise(params);
+    }
+
+    @asyncTask
+    public async getNewsAbout(params:{stockCode: string, limit: number, offset: number, count: number}) {
+        return await GetNewsAbout(params);
     }
 
     @asyncTask
@@ -90,6 +116,15 @@ export class StockManager extends BaseAsyncTaskManager {
         return await SearchStock({query});
     }
 
+    @asyncTask
+    public async collectStock(params:{id:string, stockCode:string, type:number}) {
+        return await CollectStock(params);
+    }
+
+    @asyncTask
+    public async getCollect(params:{id:string}) {
+        return await GetCollect(params);
+    }
 
 }
 

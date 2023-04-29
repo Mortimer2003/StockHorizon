@@ -5,92 +5,200 @@ import React, {useState, useRef, useEffect} from "react";
 import {Types} from "aptos";
 
 import {KChart} from "./KChart";
-import {RTData, StockDatas, StockPrice} from "../../../../../../modules/stock/StockSlice";
+import {RTP, StockDatas, StockPrice} from "../../../../../../modules/stock/StockSlice";
 import {stockMgr} from "../../../../../../modules/stock/StockManager";
+import dataTest from "../../../../../../assets/data/detail-test.json";
+import Chart from "./Chart";
+import {useNavigate} from "react-router-dom";
 
-//测试用例
-import rawData from "../../../../../../assets/data/stock-DJI.json"
 
 const s = makeStyle(style);
 
-let testRTD:RTData = {
-    price: "$127.44",
-    abChange: "-0.71",
-    reChange: "-0.55%"
-}
-
-let testDatas:StockDatas= {
-    "今开":"12.60",
-    "昨收":"12.65",
-    "最高":"12.61",
-    "最低":"12.50",
-    "成交量":"56.33万手",
-    "成交额":"7.06亿",
-    "换手率":"0.29%",
-    "市盈(TTM)":"5.36",
-    "市净率":"0.67",
-    "流通值":"2441.22亿",
-    "流通股":"194.06亿",
-    "总市值":"2441.26亿",
-    "总股本":"194.06亿",
-    "52周高":"16.37",
-    "52周低":"10.22",
+function order(obj){
+    const order = ["todayOpen", "yesterdayClose", "highest", "lowest","volume",
+                   "amount","turnoverRate","ttm","per","circulationMarketValue",
+                   "circulatingShares","mcap","zgb","ww52Highest","ww52Lowest"]
+    return  order.map(key => obj[key]);
 }
 
 
+let noneDatas:StockDatas= {
+    todayOpen:"",
+    yesterdayClose:"",
+    highest:"",
+    lowest:"",
+    volume:"",
+    amount:"",
+    turnoverRate:"",
+    ttm:"",
+    per:"",
+    circulationMarketValue:"",
+    circulatingShares:"",
+    mcap:"",
+    zgb:"",
+    ww52Highest:"",
+    ww52Lowest:"",
+}
 
+const names=["今开", "昨收", "最高", "最低", "成交量", "成交额", "换手率", "市盈(TTM)", "市净率", "流通值", "流通股", "总市值", "总股本", "52周高", "52周低"]
 
-//datas = getDatas(code);
+function deepFreeze(array) {
+    // 冻结当前数组
+    Object.freeze(array);
 
+    // 递归冻结数组的每个元素
+    array.forEach((item) => {
+        if (Array.isArray(item)) {
+            deepFreeze(item); // 递归冻结子数组
+        }
+        // 冻结子数组的每个元素
+        Object.freeze(item);
+    });
 
+    return array;
+}
 
 
 export function StockDisplay({code}) {
+    const navigate=useNavigate()
 
+    const [stockRTP,setStockRTP] = useState({
+        price: "",
+        abChange: "",
+        reChange: "",
+    })
+    const [recommend,setRecommend] = useState<{strategy: number, degree: number,}>({
+        strategy: null,
+        degree: null,
+    })
+    const [isCollected,setIsCollected] = useState<{collect: boolean, hold: boolean}>({
+        collect: null,
+        hold: null
+    })
+    const [stockDatas,setStockDatas] = useState<StockDatas>(noneDatas);
+    const [stockPrices,setStockPrices] = useState<StockPrice[]>([
+        ["",null,null,null,null,null],
+        ["",null,null,null,null,null],
+        ["",null,null,null,null,null]
+    ]);
+    const [datas,setDatas] = useState<any[]>();
 
-    const [stockDatas,setStockDatas] = useState<StockDatas>();
-    const [stockPrices,setStockPrices] = useState<StockPrice[]>();
+    //deepFreeze(dataTest.priceLibrary)
 
     useEffect(()=>{
-        stockMgr().getStockDetail(code).then((value)=>{
-            setStockDatas(value.stockData);
-            setStockPrices(value.priceLibrary);
-        }).catch((reason)=>{
-            console.log("get detail error: "+reason)
-        });
+
+        setRecommend({strategy: 1,degree: 6.8,})
+        setIsCollected({collect: false, hold: true})
+
+        setStockDatas(dataTest.stockData); //TODO:测试用,待删除
+        // @ts-ignore
+        setStockPrices(dataTest.priceLibrary.slice()); //TODO:测试用,待删除
+        //setDatas(Object.entries(dataTest.stockData));
+        setDatas(order(dataTest.stockData));
+
+        function makeRequest() {
+            stockMgr().getStockDetail({stockCode: code,id:global.UserSlice.isLogIn?global.UserSlice.isLogIn:""})
+                .then((value) => {
+                    console.log("getStockDetail return: " + value)
+
+                    if(value.stockData==null)
+                        navigate('/none');
+
+                    setRecommend(value.recommend)
+                    setIsCollected(value.isCollected)
+
+                    setStockDatas(value.stockData);
+                    setStockPrices(value.priceLibrary.slice());
+                    //setDatas(Object.entries(value.stockData));
+                    setDatas(order(value.stockData))
+                }).catch((reason) => {
+                    console.log("getStockDetail error: " + reason)
+                });
+        }
+
+        makeRequest();
+        const timer = setInterval(makeRequest, 60 * 60 * 1000);
+        return () => {
+            clearInterval(timer);
+        };
+
+    },[])
+    
+    useEffect(()=>{
+        function makeRequest() {
+
+            setStockRTP({"price":"¥71.00","abChange":"-0.15","reChange":"-0.21%"})
+
+            stockMgr().getRTP({stockCode: code}).then((value) => {
+                console.log("get RTP return: " + value)
+                // @ts-ignore
+                setStockRTP(value);
+            }).catch((reason) => {
+                console.log("get RTP error: " + reason)
+            });
+        }
+
+        makeRequest();
+        const timer = setInterval(makeRequest, 60 * 1000);
+        return () => {
+            clearInterval(timer);
+        };
+
     },[])
 
-    //
-    // //测试用：
-    // stockDatas==null?setStockDatas(testDatas):console.log("stockDatas获取成功");
-    // stockPrices==null?setStockPrices(rawData as unknown as StockPrice[]):console.log("stockDatas获取成功");
+    function handleCollect(type:number) {
+        stockMgr().collectStock({id:global.UserSlice.userId,stockCode:code,type:type})
+            .then((value) => {
+                if(value.state!==2)
+                    type==0?
+                        setIsCollected({collect:value.state == 1,hold:isCollected.hold})
+                    :
+                        setIsCollected({collect:isCollected.collect,hold:value.state == 1})
+            }).catch((reason) => {
+            console.log("collectStock error: " + reason)
+        });
 
-    const datas=Object.entries(stockDatas);
+    }
 
     // @ts-ignore
     return <div className={s('stockDisplay')}>
         <div className={s("title")}>
             <span>股票详情</span>
+            {global.UserSlice.isLogIn &&
+                <div>
+                    <button onClick={()=>handleCollect(0)}>{isCollected.collect?"已收藏":"+收藏"}</button>
+                    <button onClick={()=>handleCollect(1)}>{isCollected.hold?"已持有":"+持有"}</button>
+                </div>
+            }
         </div>
 
-        <div className={s('RT-data', parseFloat(testRTD.abChange)>0?"red":parseFloat(testRTD.abChange)<0?"green":"")}>
-            <span className={s('RT-price')}>{testRTD.price}</span>
-            <span>{testRTD.abChange}</span>
-            <span>{testRTD.reChange}</span>
+        <div className={s("top")}>
+            <div className={s('RT-data', parseFloat(stockRTP.abChange)>0?"red":parseFloat(stockRTP.abChange)<0?"green":"")}>
+                <span className={s('RT-price')}>{stockRTP.price}</span>
+                <span>{stockRTP.abChange}</span>
+                <span>{stockRTP.reChange}</span>
+            </div>
+            <div className={s('recom')}>
+                <span>{recommend.strategy==0?"推荐卖出  ":"推荐买入  "}</span>
+                <span>{recommend.degree+"分"}</span>
+            </div>
         </div>
+
 
         <table>
-            {datas.map(([name, value],index)=> {
+            {datas?.map((value,index)=> {
                 if (index % 5 === 0) {
                     return (
                         <tr key={index}>
-                            {datas.slice(index, index + 5).map(([name, value], subIndex) => (
-                                <td key={subIndex}><span className={s('left')}>{name}：</span><span className={s('right')}>{value}</span></td>
+                            {datas.slice(index, index + 5).map((value, subIndex) => (
+                                <td key={subIndex}><span className={s('left')}>{names[index+subIndex]}：</span><span className={s('right')}>{value}</span></td>
                             ))}
                         </tr>
                     );
                 }})}
         </table>
-        <KChart rawData={stockPrices}/>
+        {/*<button onClick={handleClick}>重新渲染</button>*/}
+        <KChart rawData={stockPrices.slice()}/>
+        {/*<Chart rawData={dataTest.priceLibrary}/>*/}
     </div>
 }
