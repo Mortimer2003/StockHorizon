@@ -44,7 +44,7 @@ export const GetStockDetail = get<
         stockData:StockDatas,
         priceLibrary:StockPrice[],
         recommend:Recom,
-        isCollected:{collect:boolean,hold:boolean}
+        isCollected:{collect:number,hold:number}
     }
     >("/api/stock/detail/data")
 
@@ -66,7 +66,7 @@ export const SearchStock = get<
 export const CollectStock = get<
     { id:string, stockCode:string, type:number},
     { state: number }
-    >("/api/user/collect")
+    >("/api/user/collectStock")
 
 export const GetCollect = get<
     { id:string },

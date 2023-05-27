@@ -6,7 +6,6 @@ import React, {useState, useRef, useEffect} from "react";
 import {Types} from "aptos";
 import {StockHot, StockNews, TimestampToTime, TimeToTimestamp} from "../../../../../../modules/stock/StockSlice";
 import {stockMgr} from "../../../../../../modules/stock/StockManager";
-import dataTest from "../../../../../../assets/data/news-test.json";
 
 const s = makeStyle(style);
 
@@ -77,7 +76,7 @@ export function News() {
     ])
 
     useEffect(()=>{
-        setNewsList(dataTest.newsList);//TODO:测试用,待删除
+        //setNewsList(dataTest.newsList);//TODO:测试用,待删除
 
         function makeRequest() {
             stockMgr().getNews({offset: 0, limit: 1640966400000, count: 100})
@@ -128,10 +127,10 @@ export function News() {
             {currentNews.map((item,index)=>
                 <>
                     <div className={s("news-top")}>
-                        <div className={s("left")}>{TimestampToTime(item.date)}</div>
+                        {item.date&&<div className={s("left")}>{TimestampToTime(item.date)}</div>}
                     </div>
                     <div><a href={item.url} target="_blank" className={s("news-information")}>{item.content}</a></div>
-                    <div className={s("separate")}></div>
+                    {item.date&&<div className={s("separate")}></div>}
                 </>
             )}
 

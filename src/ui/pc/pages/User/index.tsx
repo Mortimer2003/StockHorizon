@@ -13,16 +13,18 @@ import {Collect} from "../../../../modules/stock/StockSlice";
 
 const s = makeStyle(style);
 
-//TODO: 调用EditUserInfo接口，添加编辑用户信息功能
-
-
 export function Collected({id,list}:{id:string,list:Collect[]}) {
-    const stockCode = list.map(obj => obj.stockCode);
+
+    if(list==null) list = [{stockCode : "", name : "", strategy : null, degree : null,}]
+
+
+    const stockCode = list?.map(obj => obj.stockCode);
+
     // const name = list.map(obj => obj.name);
     // const strategy = list.map(obj => obj.strategy);
     // const degree = list.map(obj => obj.degree);
 
-    function RTP(index) {
+    function RTP({index}) {
         const [stockRTP,setStockRTP] = useState({
             price: "",
             abChange: "",
@@ -31,25 +33,10 @@ export function Collected({id,list}:{id:string,list:Collect[]}) {
         const [color,setColor] = useState("")
 
         useEffect(()=>{
+
             function makeRequest() {
 
-                //TODO:测试用，待删除
-                const value1={
-                    price: "$110.00",
-                    abChange: "+0.12",
-                    reChange: "+0.31%",
-                }
-                const value2={
-                    price: "$100.00",
-                    abChange: "-0.11",
-                    reChange: "-0.21%",
-                }
-                index==0?setStockRTP(value1):setStockRTP(value2)
-                // Number(value1.abChange)==0?setColor("")
-                //     :Number(value1.abChange)>0?setColor("red"):setColor("green")
-
-
-                stockMgr().getRTP({stockCode:stockCode[index]}).then((value) => {
+                list && stockCode[index] && stockMgr().getRTP({stockCode:stockCode[index]}).then((value) => {
                     console.log("get RTP return: " + value)
                     setStockRTP(value);
                     Number(value.abChange)==0?setColor("")
@@ -87,7 +74,7 @@ export function Collected({id,list}:{id:string,list:Collect[]}) {
             </div>
             <div className={s("line")}></div>
             <div>
-                <div>{list.map(({name,stockCode,strategy,degree},index)=>
+                <div>{list?.map(({name,stockCode,strategy,degree},index)=>
                     <>
                         {index!==0 && <div className={s("line2")}></div>}
                         <div className={s("item")}>
@@ -96,8 +83,8 @@ export function Collected({id,list}:{id:string,list:Collect[]}) {
                                 <div className={s("code")}>{stockCode}</div>
                             </div>
                             <RTP index={index}/>
-                            <div className={s("strategy")}>{strategy==0?"推荐卖出":"推荐买入"}</div>
-                            <div className={s("degree")}>{degree}</div>
+                            {degree&&<div className={s("strategy")}>{strategy==0?"推荐减仓":"推荐加仓"}</div>}
+                            {degree&&<div className={s("degree")}>{degree}</div>}
                         </div>
                     </>
                 )}</div>
@@ -105,23 +92,19 @@ export function Collected({id,list}:{id:string,list:Collect[]}) {
     </>
 }
 
-export function Hold({id,list}:{id:string,list:Collect[]}) {
-
-    return <></>
-}
-
-
 export function User(props) {
+    const address = useParams<{ address: string }>().address;
+
     const [pageIdx, setPageIdx] = useState(0);
 
-    const [collectList, setCollectList] = useState<{collect:Collect[],hold:Collect[]}>({
-        collect:[{
+    const [collectList, setCollectList] = useState<{collectList:Collect[],holdList:Collect[]}>({
+        collectList:[{
             stockCode : "",
             name : "",
             strategy : null,
             degree : null,
         }],
-        hold:[{
+        holdList:[{
             stockCode : "",
             name : "",
             strategy : null,
@@ -134,12 +117,6 @@ export function User(props) {
 
 
     const menuNames=["持有","收藏"]
-    // let page = useMemo(() => {
-    //     switch (pageIdx) {
-    //         case 0: return <Collected id={id} list={collectList.hold}/>
-    //         case 1: return <Collected id={id} list={collectList.collect}/>
-    //     }
-    // }, [pageIdx]);
 
     const handleMenuClick = (index, name) => setPageIdx(index);
 
@@ -198,60 +175,7 @@ export function User(props) {
 
     useEffect(()=>{
 
-        //TODO:测试用，待删除
-        const value={
-            collect:[
-                {
-                    stockCode : "1",
-                    name : "n1",
-                    strategy : 0,
-                    degree : 10,
-                },
-                {
-                    stockCode : "2",
-                    name : "n2",
-                    strategy : 1,
-                    degree : 8,
-                }],
-            hold:[
-                {
-                    stockCode : "SZ000001",
-                    name : "测试名称",
-                    strategy : 1,
-                    degree : 9,
-                },
-                {
-                    stockCode : "4",
-                    name : "n4",
-                    strategy : 0,
-                    degree : 6,
-                },{
-                    stockCode : "SZ000001",
-                    name : "测试名称",
-                    strategy : 1,
-                    degree : 9,
-                },
-                {
-                    stockCode : "4",
-                    name : "n4",
-                    strategy : 0,
-                    degree : 6,
-                },{
-                    stockCode : "SZ000001",
-                    name : "测试名称",
-                    strategy : 1,
-                    degree : 9,
-                },
-                {
-                    stockCode : "4",
-                    name : "n4",
-                    strategy : 0,
-                    degree : 6,
-                }],
-        }
-        setCollectList(value);//TODO:测试用，待删除
-
-        stockMgr().getCollect({id}).then((value) => {
+        stockMgr().getCollect({id:address}).then((value) => {
             console.log("getCollect return: " + value)
             // @ts-ignore
             setCollectList(value);
@@ -265,7 +189,7 @@ export function User(props) {
         <Navigation page={"user"}/>
         <div className={s('content')}>
             <div className={s("avatar")}>
-                <img onDoubleClick={changeAvatar} src={global.UserSlice.avatar}/>
+                <img onDoubleClick={changeAvatar} src={global.UserSlice.avatar?global.UserSlice.avatar:require("../../../../assets/icons/user.png")}/>
             </div>
             <div className={s("name")}><span onDoubleClick={changeName} id={"user-name"}>{global.UserSlice.name}</span></div>
 
@@ -280,7 +204,7 @@ export function User(props) {
                 ))}
             </div>
             <div className={s("collected")}>
-                 <Collected id={id} list={pageIdx==0?collectList.hold:collectList.collect}/>
+                 <Collected id={id} list={pageIdx==0?collectList.holdList:collectList.collectList}/>
             </div>
         </div>
     </div>

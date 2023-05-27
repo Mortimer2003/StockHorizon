@@ -71,7 +71,7 @@ export type StockNews = {
 }
 
 export type StockEnterprise = {
-    name:string, //TODO:name处理
+    name:string,
     introduction:string,
     web:string,
     address?:string,

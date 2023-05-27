@@ -7,7 +7,6 @@ import {Types} from "aptos";
 import {Link} from "react-router-dom";
 import {StockHot, TimeToTimestamp} from "../../../../../../modules/stock/StockSlice";
 import {stockMgr} from "../../../../../../modules/stock/StockManager";
-import dataTest from "../../../../../../assets/data/hot-test.json";
 
 const s = makeStyle(style);
 
@@ -86,7 +85,7 @@ export function Hot() {
         ])
 
     useEffect(()=>{
-        setHotList(dataTest.hotList); //TODO:测试用,待删除
+        //setHotList(dataTest.hotList); //TODO:测试用,待删除
 
         function makeRequest() {
             stockMgr().getHot({length: 10, type: 0, limit: 1640966400000})
@@ -133,16 +132,17 @@ export function Hot() {
         <div className={s("content")}>
             <ol>{hotList.map((item, i) =>
                 <>
-                    <li>
+                    {item.code&&<li>
                         <Link to={`/stock/${item.code}`} className={s("rank-link")}>
                             <span className={s("name")}>{item.name}</span>
-                            <div className={s(item.heatChange==0?"":item.heatChange>0?"red":"green")}>
-                                <span className={s("change")}>{item.heatChange==0?'':item.heatChange>0?'↑  ':'↓  '}</span>
+                            <div className={s(item.heatChange == 0 ? "" : item.heatChange > 0 ? "red" : "green")}>
+                                <span
+                                    className={s("change")}>{item.heatChange == 0 ? '' : item.heatChange > 0 ? '↑  ' : '↓  '}</span>
                                 <span className={s("degree")}>{item.heat?.toFixed(0)}</span>
                             </div>
                         </Link>
-                    </li>
-                    <div className={s("separate")}></div>
+                    </li>}
+                    {item.code&&<div className={s("separate")}></div>}
                 </>
             )}</ol>
         </div>

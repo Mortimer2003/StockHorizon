@@ -86,10 +86,6 @@ export function LogWindow({close}) {
 
 export function Navigation(props) {
 
-    const handleRender = useCallback(() => {
-        console.log("重绘")
-    }, [props]);
-
     //——————————————————————————导航——————————————————————————
 
     //父组件传入代码与名称
@@ -117,7 +113,12 @@ export function Navigation(props) {
                         navigate(`/stock/${value.stockCode}`);
                     }else navigate(`/none`);
                 })
-                .catch((reason)=>console.log("searchStock error: " + reason))
+                .catch((reason)=>
+                {
+                    console.log("searchStock error: " + reason)
+                    alert("请输入正确的名称或代码！")
+                })
+
         }
     }
 
@@ -175,10 +176,12 @@ export function Navigation(props) {
 
     useEffect(()=>{
         if(global.UserSlice.userId=="") global.UserSlice.isLogIn=false;
-        else userMgr().getUserInfo(global.UserSlice.userId)
+        else userMgr().getUserInfo({id:global.UserSlice.userId})
                 .then((value)=>{
                     global.UserSlice.avatar=value.avatarUrl;
                     global.UserSlice.name=value.name})
+
+        console.log("登录状态："+global.UserSlice.isLogIn)
     },[global.UserSlice.userId])
 
     const toUser = () => {
@@ -204,36 +207,35 @@ export function Navigation(props) {
 
     const LogIn = () => <div className={s("user")}>
         <div className={s("content")} onMouseOver={handleMouseOver} onMouseLeave={handleMouseOut}>
-            <div className={s("user")} >
+            <div className={s("user2")} >
                 <img onClick={logIn} src={noneAvatar}/>
                 <div onClick={logIn} className={s("user-name")}>登录</div>
             </div>
-            {global.UserSlice.isLogIn && showMenu && (
-                <div className={s("user-menu")}>
-                    <div className={s("option")} onClick={signOut}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="21.061" height="20.1" viewBox="0 0 21.061 20.1">
-                            <g id="组_211" data-name="组 211" transform="translate(-153.953 -170.274)">
-                                <path id="路径_34" data-name="路径 34" d="M360.535,306.5v-.006a.124.124,0,0,0,0-.033.083.083,0,0,1,0-.027v-.114a.083.083,0,0,0,0-.027c0-.012,0-.021,0-.033v-.006a.8.8,0,0,0-.129-.331c-.006-.012-.015-.021-.021-.033a.6.6,0,0,0-.081-.093l-5.571-5.577a.818.818,0,0,0-1.156,1.159l4.177,4.183H345.921a.819.819,0,0,0,0,1.637h11.836l-4.18,4.183a.818.818,0,1,0,1.156,1.159l5.568-5.577a.835.835,0,0,0,.235-.463Z" transform="translate(-185.528 -125.887)" fill="#fff"/>
-                                <path id="路径_35" data-name="路径 35" d="M173.2,185.782a.819.819,0,0,0-.819.819v1.174a.961.961,0,0,1-.96.963H156.55a.963.963,0,0,1-.96-.963v-14.9a.963.963,0,0,1,.96-.963h14.876a.963.963,0,0,1,.96.963v1.46a.819.819,0,1,0,1.637,0v-1.46a2.6,2.6,0,0,0-2.6-2.6H156.55a2.6,2.6,0,0,0-2.6,2.6v14.9a2.6,2.6,0,0,0,2.6,2.6h14.876a2.6,2.6,0,0,0,2.6-2.6V186.6A.826.826,0,0,0,173.2,185.782Z" transform="translate(0 0)" fill="#fff"/>
-                            </g>
-                        </svg>
-                        Sign Out
-                    </div>
-                </div>
-            )}
         </div>
     </div>
 
     const UserDisplay = () => <div className={s("user")}>
-        <div  className={s("content")}>
-            <img onClick={toUser} src={global.UserSlice.avatar}/>
-            <div onClick={toUser} className={s("user-name")}>{global.UserSlice.name}</div>
+        <div className={s("content")} onMouseOver={handleMouseOver} onMouseLeave={handleMouseOut}>
+            <div className={s("user2")} >
+                <img onClick={toUser} src={global.UserSlice.avatar?global.UserSlice.avatar:require("../../../../assets/icons/user.png")}/>
+                <div onClick={toUser} className={s("user-name")}>{global.UserSlice.name?global.UserSlice.name:"user"}</div>
+            </div>
+            {showMenu && (
+            <div className={s("user-menu")}>
+                <div className={s("option")} onClick={signOut}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="21.061" height="20.1" viewBox="0 0 21.061 20.1">
+                        <g id="组_211" data-name="组 211" transform="translate(-153.953 -170.274)">
+                            <path id="路径_34" data-name="路径 34" d="M360.535,306.5v-.006a.124.124,0,0,0,0-.033.083.083,0,0,1,0-.027v-.114a.083.083,0,0,0,0-.027c0-.012,0-.021,0-.033v-.006a.8.8,0,0,0-.129-.331c-.006-.012-.015-.021-.021-.033a.6.6,0,0,0-.081-.093l-5.571-5.577a.818.818,0,0,0-1.156,1.159l4.177,4.183H345.921a.819.819,0,0,0,0,1.637h11.836l-4.18,4.183a.818.818,0,1,0,1.156,1.159l5.568-5.577a.835.835,0,0,0,.235-.463Z" transform="translate(-185.528 -125.887)" fill="#fff"/>
+                            <path id="路径_35" data-name="路径 35" d="M173.2,185.782a.819.819,0,0,0-.819.819v1.174a.961.961,0,0,1-.96.963H156.55a.963.963,0,0,1-.96-.963v-14.9a.963.963,0,0,1,.96-.963h14.876a.963.963,0,0,1,.96.963v1.46a.819.819,0,1,0,1.637,0v-1.46a2.6,2.6,0,0,0-2.6-2.6H156.55a2.6,2.6,0,0,0-2.6,2.6v14.9a2.6,2.6,0,0,0,2.6,2.6h14.876a2.6,2.6,0,0,0,2.6-2.6V186.6A.826.826,0,0,0,173.2,185.782Z" transform="translate(0 0)" fill="#fff"/>
+                        </g>
+                    </svg>
+                    登出
+                </div>
+            </div>
+
+        )}
         </div>
     </div>
-
-    useEffect(()=>{
-
-    },[global.UserSlice.userId])
 
 
     //——————————————————————————渲染——————————————————————————

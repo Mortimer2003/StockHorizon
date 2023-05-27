@@ -6,7 +6,6 @@ import React, {useState, useRef, useEffect} from "react";
 import {Types} from "aptos";
 import {StockHot, StockNewsAbout, TimestampToTime, TimeToTimestamp} from "../../../../../../modules/stock/StockSlice";
 import {stockMgr} from "../../../../../../modules/stock/StockManager";
-import dataTest from "../../../../../../assets/data/about-news.json";
 
 const s = makeStyle(style);
 
@@ -50,7 +49,7 @@ export function News({code}) {
     ])
 
     useEffect(()=>{
-        setNewsList(dataTest.newsList); //TODO:测试用,待删除
+        // setNewsList(dataTest.newsList); //TODO:测试用,待删除
 
         stockMgr().getNewsAbout({stockCode:code, limit:1640966400000, offset:0, count:15})
             .then((value)=>{
@@ -96,11 +95,11 @@ export function News({code}) {
                     <div  className={s("news-item")}>
                         <div className={s("news-top")}>
                             <div className={s("left")}>{item.title}</div>
-                            <div className={s("right")}>{item.source+"   "+TimestampToTime(item.date)}</div>
+                            {item.date&&<div className={s("right")}>{item.source+"   "+TimestampToTime(item.date)}</div>}
                         </div>
                         <div><a href={item.url} target="_blank" className={s("news-information")}>{item.information}</a></div>
                     </div>
-                    <div className={s("separate")}></div>
+                    {item.title&&<div className={s("separate")}></div>}
                 </>
             )}
 

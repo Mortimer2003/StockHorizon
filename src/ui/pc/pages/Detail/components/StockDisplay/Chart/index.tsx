@@ -60,6 +60,6 @@ function CandlestickChart({rawData}) {
             <HighchartsReact highcharts={Highcharts} constructorType={'stockChart'} options={options} />
         </div>
     );
-};
+}
 
 export default CandlestickChart;

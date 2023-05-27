@@ -7,7 +7,6 @@ import {Types} from "aptos";
 import {Link} from "react-router-dom";
 import {StockRecom} from "../../../../../../modules/stock/StockSlice";
 import {stockMgr} from "../../../../../../modules/stock/StockManager";
-import dataTest from "../../../../../../../src/assets/data/recom-test.json";
 
 const s = makeStyle(style);
 
@@ -40,16 +39,35 @@ export function Recommend() {
     const [tagIdx, setTagIdx] = useState(0);
 
     useEffect(()=>{
-        setBuyList(dataTest.buyList); //TODO:测试用,待删除
-        setSellList(dataTest.sellList); //TODO:测试用,待删除
+        // setBuyList(dataTest.buyList); //TODO:测试用,待删除
+        // setSellList(dataTest.sellList); //TODO:测试用,待删除
 
         function makeRequest() {
             stockMgr().getStockRecom({type: tagIdx, offset: 0, count: 100, id:global.UserSlice.userId})
                 .then((value) => {
 
                     console.log("getStockRecom return: " + value)
-                    setBuyList(value.buyList);
-                    setSellList(value.sellList);
+
+                    if(value==null||value.buyList==null)
+                        setBuyList([
+                            {name:"",code:"",degree:null},
+                            {name:"",code:"",degree:null},
+                            {name:"",code:"",degree:null},
+                            {name:"",code:"",degree:null},
+                            {name:"",code:"",degree:null},
+                        ])
+                    else setBuyList(value.buyList);
+
+                    if(value==null||value.sellList==null)
+                        setSellList([
+                            {name:"",code:"",degree:null},
+                            {name:"",code:"",degree:null},
+                            {name:"",code:"",degree:null},
+                            {name:"",code:"",degree:null},
+                            {name:"",code:"",degree:null},
+                        ])
+                    else setSellList(value.sellList);
+
                 })
                 .catch((reason) => {
                     console.log("getStockRecom error: " + reason)
@@ -59,10 +77,14 @@ export function Recommend() {
         makeRequest();
         setInterval(makeRequest, 60 * 60 * 1000);
 
-    },[])
+    },[tagIdx])
 
     //TODO:处理tag切换后的请求发起
 
+    const [login,setLogin] = useState(global.UserSlice.isLogIn)
+    useEffect(()=>{
+        setLogin(global.UserSlice.isLogIn);
+    },[global.UserSlice.isLogIn])
 
     const menuNames=["全部","持有","收藏"]
 
@@ -101,7 +123,7 @@ export function Recommend() {
     return <div className={s("recommend-container")}>
         <div className={s("title")}>
             <span>投资建议：</span>
-            {global.UserSlice.isLogIn &&
+            {login &&
                 <div className={s("select")}>
                     <span>筛选:</span>
                     {menuNames.map((name, index) => (
@@ -118,7 +140,7 @@ export function Recommend() {
         <div className={s("recommend")}>
             <div className={s("left")}>
                 <div className={s("sub-title")}>
-                    <span className={s("name")}>推荐买入</span>
+                    <span className={s("name")}>推荐加仓</span>
                     <span className={s("degree")}>推荐度</span>
                 </div>
                 <ol start={1 + (currentPageOfBuy - 1) * pageSize}>{currentBuys.map((item, i) =>
@@ -146,7 +168,7 @@ export function Recommend() {
 
             <div className={s("right")}>
                 <div className={s("sub-title")}>
-                    <span className={s("name")}>推荐卖出</span>
+                    <span className={s("name")}>推荐减仓</span>
                     <span className={s("degree")}>推荐度</span>
                 </div>
                 <ol start={1 + (currentPageOfSell - 1) * pageSize}>{currentSells.map((item, i) =>

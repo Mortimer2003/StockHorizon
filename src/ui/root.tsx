@@ -11,7 +11,7 @@ const mobileAgents = ["Android", "iPhone", "iPad", "iPod", "Symbian"];
 const userAgent = navigator.userAgent;
 
 global.UserSlice = {
-	isLogIn:false,
+	isLogIn:true, //TODO:改为false
 	userId: "",
 	name:"user",
 	avatar:require("../assets/icons/user.png"),

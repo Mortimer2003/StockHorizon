@@ -6,7 +6,6 @@ import React, {useState, useRef, useEffect} from "react";
 import {Types} from "aptos";
 import {StockEnterprise, StockHot} from "../../../../../../modules/stock/StockSlice";
 import {stockMgr} from "../../../../../../modules/stock/StockManager";
-import dataTest from "../../../../../../assets/data/enterp-test.json"
 
 const s = makeStyle(style);
 
@@ -19,7 +18,6 @@ const s = makeStyle(style);
 }*/
 
 // @ts-ignore 测试用
-let enterpriseInfo:StockEnterprise=dataTest.enterpriseInfo;
 
 const names=["名称","简介","网址","地址","电话"]
 
@@ -27,8 +25,8 @@ export function Enterprise({code, setName}) {
     const [enterpriseInfo,setEnterpriseInfo] = useState<StockEnterprise>({ name:"",introduction:"",web:"",address:"",phone:""})
 
     useEffect(()=>{
-        setEnterpriseInfo(dataTest.enterpriseInfo); //TODO:测试用,待删除
-        setName(dataTest.enterpriseInfo.name); //TODO:测试用,待删除
+        // setEnterpriseInfo(dataTest.enterpriseInfo); //TODO:测试用,待删除
+        // setName(dataTest.enterpriseInfo.name); //TODO:测试用,待删除
 
         stockMgr().getEnterprise({stockCode:code})
             .then((value)=>{

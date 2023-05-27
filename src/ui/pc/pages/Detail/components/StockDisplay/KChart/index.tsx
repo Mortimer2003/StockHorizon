@@ -3,9 +3,6 @@ import style from "./index.module.css";
 import {makeStyle} from "../../../../../../../utils/CSSUtils";
 import React, {useState, useRef, useEffect} from "react";
 
-//TODO:rawData改为请求获取
-import rawData from "../../../../../../../assets/data/stock-DJI.json"
-
 const s = makeStyle(style);
 
 function splitData(rawDataRef: (number | string)[][]) {
