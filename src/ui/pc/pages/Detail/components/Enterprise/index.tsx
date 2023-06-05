@@ -41,19 +41,5 @@ export function Enterprise({code, setName}) {
     },[])
 
     return <div className={s('enterprise')}>
-        <div className={s("title")}>
-            <span>企业信息</span>
-        </div>
-        <div>
-            {Object.entries(enterpriseInfo).map(([name, value],index)=>
-                index==0?
-                    <></>
-                    :
-                names[index]=="网址"?
-                    <div><b>网址：</b><a href={value} target="_blank">{value}</a></div>
-                    :
-                    <div className={s(names[index]=="简介"?"intro":"")}><b>{names[index]}</b>：{value}</div>
-            )}
-        </div>
     </div>
 }

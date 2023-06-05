@@ -86,7 +86,7 @@ export function Recommend() {
         setLogin(global.UserSlice.isLogIn);
     },[global.UserSlice.isLogIn])
 
-    const menuNames=["全部","持有","收藏"]
+    const menuNames=["全部","收藏"]
 
     const handleMenuClick = (index, name) => {
         setTagIdx(index);
