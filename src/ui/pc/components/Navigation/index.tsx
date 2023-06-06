@@ -122,19 +122,6 @@ export function Navigation(props) {
         }
     }
 
-    // const handleInputChange = useCallback((event:React.ChangeEvent<HTMLInputElement>) => {
-    //     setQuery(event.target.value);
-    // },[])
-
-    // const SearchBox = useCallback(() => {
-    //
-    //     return <div className={s("search-box")}>
-    //     <form onSubmit={handleSearch}>
-    //         <button type="submit" ></button>
-    //         <input type="text" value={query} onChange={handleInputChange} placeholder="搜索股票……" name="search"/>
-    //     </form>
-    // </div>},[query])
-
     function SearchBox({ onSearch }) {
         const [query, setQuery] = useState('');
 
@@ -164,15 +151,9 @@ export function Navigation(props) {
 
     //——————————————————————————登录——————————————————————————
 
-    // const [userId, setUserId] = useState(null)
-    // const [isLogIn,setIsLogIn] = useState(false) //暂时在这里修改登录态
     const [showLogWindow,setShowLogWindow] = useState(false)
 
     const noneAvatar = require("../../../../assets/icons/user.png")
-
-    // const [userAvatar,setUserAvatar] = useState(noneAvatar)
-    // const [userName,setUserName] = useState("user")
-
 
     useEffect(()=>{
         if(global.UserSlice.userId=="") global.UserSlice.isLogIn=false;

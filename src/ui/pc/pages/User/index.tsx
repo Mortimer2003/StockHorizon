@@ -20,10 +20,6 @@ export function Collected({id,list}:{id:string,list:Collect[]}) {
 
     const stockCode = list?.map(obj => obj.stockCode);
 
-    // const name = list.map(obj => obj.name);
-    // const strategy = list.map(obj => obj.strategy);
-    // const degree = list.map(obj => obj.degree);
-
     function RTP({index}) {
         const [stockRTP,setStockRTP] = useState({
             price: "",

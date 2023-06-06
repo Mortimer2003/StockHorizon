@@ -10,14 +10,7 @@ import {stockMgr} from "../../../../../../modules/stock/StockManager";
 
 const s = makeStyle(style);
 
-//TODO：调用getStockRecom(type:RecomType,count:number,offset?:number),
-//     返回值设置buyList/sellList
-//     注意切换类别时更新
-
-
-
 export function Recommend() {
-    //TODO:测试数据集
 
     // @ts-ignore
     const [buyList,setBuyList]=useState<StockRecom[]>([
@@ -39,8 +32,6 @@ export function Recommend() {
     const [tagIdx, setTagIdx] = useState(0);
 
     useEffect(()=>{
-        // setBuyList(dataTest.buyList); //TODO:测试用,待删除
-        // setSellList(dataTest.sellList); //TODO:测试用,待删除
 
         function makeRequest() {
             stockMgr().getStockRecom({type: tagIdx, offset: 0, count: 100, id:global.UserSlice.userId})

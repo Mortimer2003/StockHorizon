@@ -67,7 +67,6 @@ console.error = (function() {
 export function Root() {
 	const [width, setWidth] = useState(window.innerWidth);
 	const [height, setHeight] = useState(window.innerHeight);
-	//const [searchResult, setSearchResult] = useState<{code:string,name:string}>(null)
 
 	const onResize = (e: UIEvent) => {
 		console.log("onResize", e, e.detail, window.innerWidth, window.innerHeight)

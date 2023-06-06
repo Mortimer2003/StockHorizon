@@ -71,13 +71,6 @@ export function KChart({rawData}) {
         const downColor = '#ec0000';
 
         let data = splitData(rawData.slice());
-        // if(data.categoryData==null||data.values==null||data.volumes==null)
-        // {
-        //     rawDataRef=rawData;
-        //     data = splitData(rawDataRef);
-        // }
-        //console.log(rawData)
-
 
         let option = {  //配置项(数据都来自于props)
             animation: false,
