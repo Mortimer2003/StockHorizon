@@ -10,81 +10,42 @@ import {stockMgr} from "../../../../../../modules/stock/StockManager";
 
 const s = makeStyle(style);
 
-//TODO：调用getStockRecom(type:RecomType,count:number,offset?:number),
-//     返回值设置buyList/sellList
-//     注意切换类别时更新
-
-
-
 export function Recommend() {
     //TODO:测试数据集
 
     // @ts-ignore
     const [buyList,setBuyList]=useState<StockRecom[]>([
-        {name:"",code:"",degree:null},
-        {name:"",code:"",degree:null},
-        {name:"",code:"",degree:null},
-        {name:"",code:"",degree:null},
-        {name:"",code:"",degree:null},
+        {name:"推荐加仓1",code:"a1",degree:10},
+        {name:"推荐加仓2",code:"a2",degree:9},
+        {name:"推荐加仓3",code:"a3",degree:8},
+        {name:"推荐加仓4",code:"a4",degree:7},
+        {name:"推荐加仓5",code:"a5",degree:6},
+        {name:"推荐加仓6",code:"a6",degree:5},
+        {name:"推荐加仓7",code:"a7",degree:4},
+        {name:"推荐加仓8",code:"a8",degree:3},
+        {name:"推荐加仓9",code:"a9",degree:2},
+        {name:"推荐加仓10",code:"a10",degree:1},
     ]);
+
     // @ts-ignore
     const [sellList,setSellList]=useState<StockRecom[]>([
-        {name:"",code:"",degree:null},
-        {name:"",code:"",degree:null},
-        {name:"",code:"",degree:null},
-        {name:"",code:"",degree:null},
-        {name:"",code:"",degree:null},
+        {name:"推荐减仓1",code:"b1",degree:10},
+        {name:"推荐减仓2",code:"b2",degree:9},
+        {name:"推荐减仓3",code:"b3",degree:8},
+        {name:"推荐减仓4",code:"b4",degree:7},
+        {name:"推荐减仓5",code:"b5",degree:6},
+        {name:"推荐减仓6",code:"b6",degree:5},
+        {name:"推荐减仓7",code:"b7",degree:4},
+        {name:"推荐减仓8",code:"b8",degree:3},
+        {name:"推荐减仓9",code:"b9",degree:2},
+        {name:"推荐减仓10",code:"b10",degree:1},
     ]);
 
     const [tagIdx, setTagIdx] = useState(0);
 
-    useEffect(()=>{
-        // setBuyList(dataTest.buyList); //TODO:测试用,待删除
-        // setSellList(dataTest.sellList); //TODO:测试用,待删除
-
-        function makeRequest() {
-            stockMgr().getStockRecom({type: tagIdx, offset: 0, count: 100, id:global.UserSlice.userId})
-                .then((value) => {
-
-                    console.log("getStockRecom return: " + value)
-
-                    if(value==null||value.buyList==null)
-                        setBuyList([
-                            {name:"",code:"",degree:null},
-                            {name:"",code:"",degree:null},
-                            {name:"",code:"",degree:null},
-                            {name:"",code:"",degree:null},
-                            {name:"",code:"",degree:null},
-                        ])
-                    else setBuyList(value.buyList);
-
-                    if(value==null||value.sellList==null)
-                        setSellList([
-                            {name:"",code:"",degree:null},
-                            {name:"",code:"",degree:null},
-                            {name:"",code:"",degree:null},
-                            {name:"",code:"",degree:null},
-                            {name:"",code:"",degree:null},
-                        ])
-                    else setSellList(value.sellList);
-
-                })
-                .catch((reason) => {
-                    console.log("getStockRecom error: " + reason)
-                })
-        }
-
-        makeRequest();
-        setInterval(makeRequest, 60 * 60 * 1000);
-
-    },[tagIdx])
-
     //TODO:处理tag切换后的请求发起
 
-    const [login,setLogin] = useState(global.UserSlice.isLogIn)
-    useEffect(()=>{
-        setLogin(global.UserSlice.isLogIn);
-    },[global.UserSlice.isLogIn])
+    const [login,setLogin] = useState(false)
 
     const menuNames=["全部","收藏"]
 

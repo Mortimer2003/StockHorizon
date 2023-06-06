@@ -15,9 +15,6 @@ const s = makeStyle(style);
 export function None(props) {
 
     return <div className={s('none')}>
-        <Navigation page={"none"}/>
-        <div className={s('content')}>
-            {"非常抱歉，本网站未收录该股票信息"}
-        </div>
+
     </div>
 }

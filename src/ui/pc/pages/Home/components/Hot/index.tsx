@@ -13,102 +13,78 @@ const s = makeStyle(style);
 export function Hot() {
     const [hotList,setHotList] = useState<StockHot[]>([
             {
-                name: "",
-                code: "",
+                name: "热门1",
+                code: "c1",
                 exchange: "",
-                heat: null,
-                heatChange: null
+                heat: 10,
+                heatChange: 5
             },
             {
-                name: "",
-                code: "",
+                name: "热门2",
+                code: "c2",
                 exchange: "",
-                heat: null,
-                heatChange: null
+                heat: 9,
+                heatChange: 4
             },
             {
-                name: "",
-                code: "",
+                name: "热门3",
+                code: "c3",
                 exchange: "",
-                heat: null,
-                heatChange: null
+                heat: 8,
+                heatChange: 3
             },
             {
-                name: "",
-                code: "",
+                name: "热门4",
+                code: "c4",
                 exchange: "",
-                heat: null,
-                heatChange: null
+                heat: 7,
+                heatChange: 2
             },
             {
-                name: "",
-                code: "",
+                name: "热门5",
+                code: "c5",
                 exchange: "",
-                heat: null,
-                heatChange: null
+                heat: 6,
+                heatChange: 1
             },
             {
-                name: "",
-                code: "",
+                name: "热门6",
+                code: "c6",
                 exchange: "",
-                heat: null,
-                heatChange: null
+                heat: 5,
+                heatChange: 0
             },
             {
-                name: "",
-                code: "",
+                name: "热门7",
+                code: "c7",
                 exchange: "",
-                heat: null,
-                heatChange: null
+                heat: 4,
+                heatChange: -1
             },
             {
-                name: "",
-                code: "",
+                name: "热门8",
+                code: "c8",
                 exchange: "",
-                heat: null,
-                heatChange: null
+                heat: 3,
+                heatChange: -2
             },
             {
-                name: "",
-                code: "",
+                name: "热门9",
+                code: "c9",
                 exchange: "",
-                heat: null,
-                heatChange: null
+                heat: 2,
+                heatChange: -3
             },
             {
-                name: "",
-                code: "",
+                name: "热门10",
+                code: "c10",
                 exchange: "",
-                heat: null,
-                heatChange: null
+                heat: 1,
+                heatChange: -4
             }
         ])
 
-    useEffect(()=>{
-        //setHotList(dataTest.hotList); //TODO:测试用,待删除
-
-        function makeRequest() {
-            stockMgr().getHot({length: 10, type: 0, limit: 1640966400000})
-                .then((value) => {
-                    console.log("getHot return: " + value)
-                    setHotList(value.hotList);
-                })
-                .catch((reason) => {
-                    console.log("getHot error: " + reason)
-                })
-        }
-
-        makeRequest();
-        setInterval(makeRequest, 60 * 60 * 1000);
-    },[])
-
-
-
-    
-    //TODO:处理tag切换后的请求发起
-
     const [tagIdx, setTagIdx] = useState(0);
-    const menuNames=["全球","沪深","港股","美股"]
 
     const handleMenuClick = (index, name) => {
         setTagIdx(index);
@@ -118,14 +94,6 @@ export function Hot() {
         <div className={s("title")}>
             <span>热门股票：</span>
             <div className={s("select")}>
-            {/*<span>筛选:</span>*/}
-            {/*{menuNames.map((name, index) => (*/}
-            {/*    <div key={index}*/}
-            {/*         onClick={() => handleMenuClick(index, name)}*/}
-            {/*         className={s(`item${index+1}`, tagIdx == index && "current")}>*/}
-            {/*        {name}*/}
-            {/*    </div>*/}
-            {/*))}*/}
         </div>
         </div>
         <div className={s("separate")}></div>

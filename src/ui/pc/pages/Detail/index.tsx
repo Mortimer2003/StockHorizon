@@ -15,7 +15,6 @@ const s = makeStyle(style);
 
 export function Detail(props) {
 
-
     const code = useParams<{ stockCode: string }>().stockCode;
     const [name,setName] = useState("");
 
