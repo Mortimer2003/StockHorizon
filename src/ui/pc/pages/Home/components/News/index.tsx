@@ -9,53 +9,31 @@ import {stockMgr} from "../../../../../../modules/stock/StockManager";
 
 const s = makeStyle(style);
 
-
-let newsListTest:StockNews[] = [
-    {
-        content:"资讯内容1，资讯内容1，资讯内容1，资讯内容1，资讯内容1.",
-        date:"2021/5/6 上午11:10:35",
-        url:"https://www.123.com"
-    },
-    {
-        content:"资讯内容2，资讯内容2，资讯内容2，资讯内容2，资讯内容2.",
-        date:"2021/5/6 上午11:10:35",
-        url:"https://www.123.com"
-    },
-    {
-        content:"资讯内容3，资讯内容3，资讯内容3，资讯内容3，资讯内容3.",
-        date:"2021/5/6 上午11:10:35",
-        url:"https://www.123.com"
-    },
-    {
-        content:"资讯内容4，资讯内容4，资讯内容4，资讯内容4，资讯内容4.",
-        date:"2021/5/6 上午11:10:35",
-        url:"https://www.123.com"
-    },
-    {
-        content:"资讯内容5，资讯内容5，资讯内容5，资讯内容5，资讯内容5.",
-        date:"2021/5/6 上午11:10:35",
-        url:"https://www.123.com"
-    },
-    {
-        content:"资讯内容6，资讯内容6，资讯内容6，资讯内容6，资讯内容6.",
-        date:"2021/5/6 上午11:10:35",
-        url:"https://www.123.com"
-    },
-    {
-        content:"资讯内容7，资讯内容7，资讯内容7，资讯内容7，资讯内容7.",
-        date:"2021/5/6 上午11:10:35",
-        url:"https://www.123.com"
-    },
-    {
-        content:"资讯内容8，资讯内容8，资讯内容8，资讯内容8，资讯内容8.",
-        date:"2021/5/6 上午11:10:35",
-        url:"https://www.123.com"
-    },
-]
-
-
 export function News() {
-    const [newsList,setNewsList] = useState<StockNews[]>(newsListTest)
+    const noneItem = {
+        content:"",
+        date:"",
+        url:""
+    }
+    const noneList=Array(10).fill(noneItem);
+    const [newsList,setNewsList] = useState<StockNews[]>(noneList);
+
+    useEffect(()=>{
+
+        function makeRequest() {
+            stockMgr().getNews({offset: 0, limit: 1640966400000, count: 100})
+                .then((value) => {
+                    console.log("getNews return: " + value)
+                    setNewsList(value.newsList);
+                })
+                .catch((reason) => {
+                    console.log("getNews error: " + reason)
+                })
+        }
+
+        makeRequest();
+        setInterval(makeRequest, 10 * 60 * 1000);
+    },[])
 
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 5; // 每页展示的新闻条数
@@ -98,6 +76,6 @@ export function News() {
                 </>
             )}
 
-            </div>
+        </div>
     </div>
 }
