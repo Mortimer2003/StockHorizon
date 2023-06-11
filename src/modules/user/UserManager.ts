@@ -39,18 +39,12 @@ export class UserManager extends BaseAsyncTaskManager {
     @asyncTask
     public async logInUser(params:{phone:string, password: string}) {
         console.log(params)
-
         return await LogInUser(params);
     }
 
     @asyncTask
     public async getUserInfo(params:{id: string}) {
         return await GetUserInfo(params);
-    }
-
-    @asyncTask
-    public async editUserInfo(edit:{id:string, name?:string, avatar?:FormData}) {
-        return await EditUserInfo({id:edit.id, name:edit.name});
     }
 
 }
