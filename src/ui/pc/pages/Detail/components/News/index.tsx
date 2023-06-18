@@ -12,57 +12,44 @@ const s = makeStyle(style);
 export function News({code}) {
     const [newsList,setNewsList] = useState<StockNewsAbout[]>([
         {
-            title:"",
+            title:"标题1",
             date:"",
-            source:"",
-            url:"",
-            information:""
+            source:"未知来源",
+            url:"www.123.com",
+            information:"测试信息测试信息测试信息测试信息测试信息测试信息测试信息测试信息测试信息测试信息"
         },
         {
-            title:"",
+            title:"标题2",
             date:"",
-            source:"",
-            url:"",
-            information:""
+            source:"未知来源",
+            url:"www.123.com",
+            information:"测试信息测试信息测试信息测试信息测试信息测试信息测试信息测试信息测试信息测试信息"
         },
         {
-            title:"",
+            title:"标题3",
             date:"",
-            source:"",
-            url:"",
-            information:""
+            source:"未知来源",
+            url:"www.123.com",
+            information:"测试信息测试信息测试信息测试信息测试信息测试信息测试信息测试信息测试信息测试信息"
         },
         {
-            title:"",
+            title:"标题4",
             date:"",
-            source:"",
-            url:"",
-            information:""
+            source:"未知来源",
+            url:"www.123.com",
+            information:"测试信息测试信息测试信息测试信息测试信息测试信息测试信息测试信息测试信息测试信息"
         },
         {
-            title:"",
+            title:"标题5",
             date:"",
-            source:"",
-            url:"",
-            information:""
+            source:"未知来源",
+            url:"www.123.com",
+            information:"测试信息测试信息测试信息测试信息测试信息测试信息测试信息测试信息测试信息测试信息"
         },
     ])
 
-    useEffect(()=>{
-        // setNewsList(dataTest.newsList); //TODO:测试用,待删除
-
-        stockMgr().getNewsAbout({stockCode:code, limit:1640966400000, offset:0, count:15})
-            .then((value)=>{
-                console.log("getNewsAbout return: "+value)
-                setNewsList(value.newsList);
-            })
-            .catch((reason)=>{
-                console.log("getNewsAbout error: "+reason)
-            })
-    },[])
-
     const [currentPage, setCurrentPage] = useState(1);
-    const pageSize = 3; // 每页展示的新闻条数
+    const pageSize = 4; // 每页展示的新闻条数
 
     const startIndex = (currentPage - 1) * pageSize;
     const endIndex = startIndex + pageSize;

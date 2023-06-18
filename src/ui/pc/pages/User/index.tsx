@@ -29,28 +29,10 @@ export function Collected({id,list}:{id:string,list:Collect[]}) {
         const [color,setColor] = useState("")
 
         useEffect(()=>{
-
-            //TODO:优化为一组股票发起一个RTP请求
-            function makeRequest() {
-
-                list && stockCode[index] && stockMgr().getRTP({stockCode:stockCode[index]}).then((value) => {
-                    console.log("get RTP return: " + value)
-                    setStockRTP(value);
-                    Number(value.abChange)==0?setColor("")
-                        :Number(value.abChange)>0?setColor("red"):setColor("green")
-                }).catch((reason) => {
-                    console.log("get RTP error: " + reason)
-                });
-
-            }
-
-            makeRequest();
-            const timer = setInterval(makeRequest, 60 * 1000);
-            return () => {
-                clearInterval(timer);
-            };
+            //TODO：定时请求最新股价
         },[])
 
+        //TODO：对收藏进行排序
         return <>
             {stockRTP?.price ?
                 <div className={s("price", color)}>{stockRTP.price}</div>
@@ -108,10 +90,20 @@ export function User(props) {
     const [pageIdx, setPageIdx] = useState(0);
 
     const noneList:Collect[]=[{
-        stockCode : "",
-        name : "",
-        strategy : null,
-        degree : null,
+        stockCode : "001",
+        name : "收藏1",
+        strategy : 0,
+        degree : 5,
+    },{
+        stockCode : "002",
+        name : "收藏2",
+        strategy : 1,
+        degree : 6,
+    },{
+        stockCode : "003",
+        name : "收藏3",
+        strategy : 0,
+        degree : 7,
     }]
 
     const [collectList, setCollectList] = useState<{collectList:Collect[]}>({collectList:noneList});
@@ -169,42 +161,8 @@ export function User(props) {
             formData.append('avatar', avatar);
             formData.append('name', name);
 
-            // 发送 POST 请求
-            userMgr().editUserInfo(formData)
-                .then(value => {
-                    // 请求成功处理逻辑
-                    // value.state: 0失败 1仅头像更新 2仅昵称更新 3头像与昵称都更新
-                    const currentUserSlice = userSlice;
-                    switch (value.state){
-                        case 0: alert("修改失败！");
-                            break;
-                        case 1: currentUserSlice.avatar=value.avatarUrl;
-                            setUserSlice({...currentUserSlice});
-                            alert("修改成功！");
-                            break;
-                        case 2: currentUserSlice.name=value.name;
-                            setUserSlice({...currentUserSlice});
-                            alert("修改成功！");
-                            break;
-                        case 3: currentUserSlice.avatar=value.avatarUrl;
-                            currentUserSlice.name=value.name;
-                            setUserSlice({...currentUserSlice});
-                            alert("修改成功！");
-                            break;
-                    }
-                    console.log(userSlice)
-                    close();
+            //TODO：发送 POST 请求 修改用户信息
 
-                    // 清空表单
-                    setAvatar(null);
-                    setPreviewURL(userSlice.avatar);
-                    setName(userSlice.name);
-                })
-                .catch(error => {
-                    // 请求失败处理逻辑
-                    console.log("修改信息失败："+error);
-
-                });
         };
 
 

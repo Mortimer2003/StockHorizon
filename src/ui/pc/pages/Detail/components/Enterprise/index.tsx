@@ -12,21 +12,7 @@ const s = makeStyle(style);
 const names=["名称","简介","网址","地址","电话"]
 
 export function Enterprise({code, setName}) {
-    const [enterpriseInfo,setEnterpriseInfo] = useState<StockEnterprise>({ name:"",introduction:"",web:"",address:"",phone:""})
-
-    useEffect(()=>{
-
-        stockMgr().getEnterprise({stockCode:code})
-            .then((value)=>{
-                console.log("getEnterprise return: "+value)
-                setEnterpriseInfo(value.enterpriseInfo);
-                setName(value.enterpriseInfo.name)
-            })
-            .catch((reason)=>{
-                console.log("getEnterprise error: "+reason)
-            })
-
-    },[])
+    const [enterpriseInfo,setEnterpriseInfo] = useState<StockEnterprise>({ name:"XX有限公司",introduction:"这里是公司介绍这里是公司介绍这里是公司介绍这里是公司介绍这里是公司介绍这里是公司介绍这里是公司介绍这里是公司介绍这里是公司介绍这里是公司介绍这里是公司介绍这里是公司介绍",web:"www.123.com",address:"广东省广州市华南理工大学",phone:"10086"})
 
     return <div className={s('enterprise')}>
         <div className={s("title")}>
