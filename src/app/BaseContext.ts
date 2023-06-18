@@ -33,24 +33,4 @@ export abstract class BaseContext<T = any> {
 		return this.contents.find(s => s.clazz == clazz);
 	}
 
-	// public create<T2 extends T>(
-	// 	clazz: Constructor<T2>){
-	// 	if (clazz) this.contents[clazz.name] = new clazz();
-	//
-	// 	console.error("[" + this.contentName() + " CREATE] ", {clazz, this: this});
-	// }
-	//
-	// public instance<T2 extends T>(
-	// 	clazz: Constructor<T2> | string) : T2 {
-	// 	if (!clazz) return null;
-	//
-	// 	const res = typeof clazz == 'string' ?
-	// 		this.contents[clazz] : this.instance(clazz.name);
-	//
-	// 	if (!res)
-	// 		console.error("[" + this.contentName() + " GET] ",
-	// 			{clazz, res, this: this});
-	//
-	// 	return res;
-	// }
 }

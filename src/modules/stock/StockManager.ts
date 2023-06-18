@@ -48,6 +48,16 @@ export const GetStockDetail = get<
     }
     >("/api/stock/detail/data")
 
+export const GetEnterprise = get<
+    { stockCode:string },
+    { enterpriseInfo:StockEnterprise }
+    >("/api/stock/detail/enterprise")
+
+export const GetNewsAbout = get<
+    { stockCode:string, limit:number, offset:number, count:number },
+    { newsList: StockNewsAbout[]}
+    >("/api/stock/detail/news")
+
 export const SearchStock = get<
     { query:string },
     { stockCode: string, name: string }
@@ -57,6 +67,11 @@ export const CollectStock = get<
     { id:string, stockCode:string, type:number},
     { state: number }
     >("/api/user/collectStock")
+
+export const GetCollect = get<
+    { id:string },
+    { collectList:Collect[], holdList:Collect[] }
+    >("/api/user/getCollect")
 
 @manager
 export class StockManager extends BaseAsyncTaskManager {
@@ -87,6 +102,16 @@ export class StockManager extends BaseAsyncTaskManager {
     }
 
     @asyncTask
+    public async getEnterprise(params:{stockCode: string}) {
+        return await GetEnterprise(params);
+    }
+
+    @asyncTask
+    public async getNewsAbout(params:{stockCode: string, limit: number, offset: number, count: number}) {
+        return await GetNewsAbout(params);
+    }
+
+    @asyncTask
     public async searchStock(query: string) {
         return await SearchStock({query});
     }
@@ -94,6 +119,11 @@ export class StockManager extends BaseAsyncTaskManager {
     @asyncTask
     public async collectStock(params:{id:string, stockCode:string, type:number}) {
         return await CollectStock(params);
+    }
+
+    @asyncTask
+    public async getCollect(params:{id:string}) {
+        return await GetCollect(params);
     }
 
 }

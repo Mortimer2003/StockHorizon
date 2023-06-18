@@ -7,7 +7,6 @@ import {Types} from "aptos";
 import {Navigation} from "../../components/Navigation";
 import {useParams} from "react-router-dom";
 import {userMgr} from "../../../../modules/user/UserManager";
-//import  "../../../../modules/user/UserSlice";
 
 const s = makeStyle(style);
 

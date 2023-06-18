@@ -10,10 +10,20 @@ import {None} from "./pc/pages/None";
 const mobileAgents = ["Android", "iPhone", "iPad", "iPod", "Symbian"];
 const userAgent = navigator.userAgent;
 
+export const defaultUserSlice= {
+	isLogIn:false,
+	userId: "",
+	name: "user",
+	avatar:require("../assets/icons/user.png"),
+	phone: "",
+}
+
+export const UserContext = React.createContext(null)
+
 export function Root() {
 	const [width, setWidth] = useState(window.innerWidth);
 	const [height, setHeight] = useState(window.innerHeight);
-	//const [searchResult, setSearchResult] = useState<{code:string,name:string}>(null)
+	const [userSlice, setUserSlice] = useState({...defaultUserSlice});
 
 	const onResize = (e: UIEvent) => {
 		console.log("onResize", e, e.detail, window.innerWidth, window.innerHeight)
@@ -26,13 +36,7 @@ export function Root() {
 	const ratio = width / height;
 	const isMobile = ratio <= 0.75 || mobileAgents.some(ag => userAgent.includes(ag));
 
-	return isMobile ?
-		<BrowserRouter>
-			<Routes>
-				<Route path='/' element={<></>}/>
-			</Routes>
-		</BrowserRouter>
-		:
+	return <UserContext.Provider value={{userSlice,setUserSlice}}>
 		<BrowserRouter>
 			<Routes>
 				<Route path='' element={<Home/>}/>
@@ -41,6 +45,6 @@ export function Root() {
 				<Route path='/user/:address' element={<User/>}/>
 				<Route path='/stock/:stockCode' element={<Detail/>}/>
 			</Routes>
-
 		</BrowserRouter>
+	</UserContext.Provider>
 }

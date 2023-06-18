@@ -21,7 +21,11 @@ export function Detail(props) {
     return <div className={s('detail')}>
         <Navigation page={"detail"} code={code} name={name}/>
         <div className={s('content')}>
-            <StockDisplay code={code}/>
+            <StockDisplay code={code} setName={setName}/>
+            <div className={s('right')}>
+                <Enterprise code={code} setName={setName}/>
+                <News code={code}/>
+            </div>
         </div>
     </div>
 }

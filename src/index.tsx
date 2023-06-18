@@ -9,20 +9,18 @@ const App = ReactDOM.createRoot(
 	document.getElementById('root') as HTMLElement
 );
 
-export const defaultUserSlice= {
-	isLogIn:false,
-	userId: "",
-	name: "user",
-	avatar:require("./assets/icons/user.png"),
-	phone: "",
-}
-
-export const UserContext = React.createContext(defaultUserSlice)
 
 App.render(
-	<UserContext.Provider value={defaultUserSlice}>
+	<Root/>
+)
+
+/*
+export const UserContext = React.createContext(null)
+const [userSlice, setUserSlice] = useState(defaultUserSlice);
+
+App.render(
+	<UserContext.Provider value={{userSlice, setUserSlice}}>
 		<Root/>
 	</UserContext.Provider>
 )
-
-
+*/

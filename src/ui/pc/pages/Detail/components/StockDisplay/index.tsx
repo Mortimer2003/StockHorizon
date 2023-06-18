@@ -8,7 +8,7 @@ import {KChart} from "./KChart";
 import {RTP, StockDatas, StockPrice} from "../../../../../../modules/stock/StockSlice";
 import {stockMgr} from "../../../../../../modules/stock/StockManager";
 import {useNavigate} from "react-router-dom";
-import {UserContext} from "../../../../../../index";
+import {UserContext} from "../../../../../root";
 
 
 const s = makeStyle(style);
@@ -21,7 +21,7 @@ function order(obj){
 }
 
 
-let noneDatas:StockDatas= {
+const noneDatas:StockDatas= {
     todayOpen:"",
     yesterdayClose:"",
     highest:"",
@@ -39,12 +39,14 @@ let noneDatas:StockDatas= {
     ww52Lowest:"",
 }
 
+const nonePrice:StockPrice=["",null,null,null,null,null]
+
 
 const names=["今开", "昨收", "最高", "最低", "成交量", "成交额", "换手率", "市盈(TTM)", "市净率", "流通值", "流通股", "总市值", "总股本", "52周高", "52周低"]
 
-export function StockDisplay({code}) {
+export function StockDisplay({code,setName}) {
     const navigate=useNavigate()
-    const UserSlice=useContext(UserContext)
+    const {userSlice, setUserSlice}=useContext(UserContext)
 
     const [stockRTP,setStockRTP] = useState({
         price: "",
@@ -60,17 +62,20 @@ export function StockDisplay({code}) {
         hold: null
     })
     const [stockDatas,setStockDatas] = useState<StockDatas>(noneDatas);
-    const [stockPrices,setStockPrices] = useState<StockPrice[]>([
-        ["",null,null,null,null,null],
-        ["",null,null,null,null,null],
-        ["",null,null,null,null,null]
-    ]);
+    const [stockPrices,setStockPrices] = useState<StockPrice[]>(new Array(5).fill(nonePrice));
     const [datas,setDatas] = useState<any[]>();
+
+    useEffect(()=>{
+        stockMgr().getEnterprise({stockCode:code})
+            .then((value)=>{
+                setName(value.enterpriseInfo.name);
+            })
+    },[])
 
     useEffect(()=>{
 
         function makeRequest() {
-            stockMgr().getStockDetail({stockCode: code,id:UserSlice.isLogIn?UserSlice.userId:""})
+            stockMgr().getStockDetail({stockCode: code,id:userSlice.isLogIn?userSlice.userId:""})
                 .then((value) => {
                     console.log("getStockDetail return: " + value)
 
@@ -79,7 +84,7 @@ export function StockDisplay({code}) {
 
                     setRecommend(value.recommend)
 
-                    UserSlice.isLogIn && setIsCollected({collect:value.isCollected.collect==0?false:value.isCollected.collect==1?true:null,hold:value.isCollected.hold==0?false:value.isCollected.hold==1?true:null})
+                    userSlice.isLogIn && setIsCollected({collect:value.isCollected.collect==0?false:value.isCollected.collect==1?true:null,hold:value.isCollected.hold==0?false:value.isCollected.hold==1?true:null})
 
                     setStockDatas(value.stockData);
                     // @ts-ignore
@@ -102,8 +107,6 @@ export function StockDisplay({code}) {
     useEffect(()=>{
         function makeRequest() {
 
-            //setStockRTP({"price":"¥71.00","abChange":"-0.15","reChange":"-0.21%"})
-
             stockMgr().getRTP({stockCode: code}).then((value) => {
                 console.log("get RTP return: " + value)
                 // @ts-ignore
@@ -122,7 +125,7 @@ export function StockDisplay({code}) {
     },[])
 
     function handleCollect(type:number) {
-        stockMgr().collectStock({id:UserSlice.userId,stockCode:code,type:type})
+        stockMgr().collectStock({id:userSlice.userId,stockCode:code,type:type})
             .then((value) => {
                 if(value.state!==2)
                     type==0?
@@ -140,10 +143,9 @@ export function StockDisplay({code}) {
     return <div className={s('stockDisplay')}>
         <div className={s("title")}>
             <span>股票详情</span>
-            {UserSlice.isLogIn &&
+            {userSlice.isLogIn &&
                 <div>
                     <button onClick={()=>handleCollect(0)}>{isCollected.collect?"已收藏":"+收藏"}</button>
-
                 </div>
             }
         </div>

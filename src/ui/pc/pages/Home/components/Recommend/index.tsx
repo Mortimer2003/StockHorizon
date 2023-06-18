@@ -7,12 +7,12 @@ import {Types} from "aptos";
 import {Link} from "react-router-dom";
 import {StockRecom} from "../../../../../../modules/stock/StockSlice";
 import {stockMgr} from "../../../../../../modules/stock/StockManager";
-import {UserContext} from "../../../../../../index";
+import {UserContext} from "../../../../../root";
 
 const s = makeStyle(style);
 
 export function Recommend() {
-    const UserSlice=useContext(UserContext)
+    const {userSlice, setUserSlice}=useContext(UserContext)
 
     const noneList=Array(5).fill({name:"",code:"",degree:null});
 
@@ -26,7 +26,7 @@ export function Recommend() {
     useEffect(()=>{
 
         function makeRequest() {
-            stockMgr().getStockRecom({type: tagIdx, offset: 0, count: 100, id:UserSlice.userId})
+            stockMgr().getStockRecom({type: tagIdx, offset: 0, count: 100, id:userSlice.userId})
                 .then((value) => {
 
                     console.log("getStockRecom return: " + value)
@@ -50,10 +50,10 @@ export function Recommend() {
     },[tagIdx])
 
 
-    const [login,setLogin] = useState(UserSlice.isLogIn)
+    const [login,setLogin] = useState(userSlice.isLogIn)
     useEffect(()=>{
-        setLogin(UserSlice.isLogIn);
-    },[UserSlice.isLogIn])
+        setLogin(userSlice.isLogIn);
+    },[userSlice.isLogIn])
 
     const menuNames=["全部","收藏"]
 
