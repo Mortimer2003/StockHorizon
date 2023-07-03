@@ -20,6 +20,7 @@ export const defaultUserSlice= {
 
 export const UserContext = React.createContext(null)
 
+
 export function Root() {
 	const [width, setWidth] = useState(window.innerWidth);
 	const [height, setHeight] = useState(window.innerHeight);

@@ -5,7 +5,7 @@ import React, {useState, useRef, useEffect, useContext} from "react";
 import {Types} from "aptos";
 
 import {KChart} from "./KChart";
-import {RTP, StockDatas, StockPrice} from "../../../../../../modules/stock/StockSlice";
+import {StockDatas, StockPrice} from "../../../../../../modules/stock/StockSlice";
 import {stockMgr} from "../../../../../../modules/stock/StockManager";
 import {useNavigate} from "react-router-dom";
 import {UserContext} from "../../../../../root";
@@ -89,7 +89,6 @@ export function StockDisplay({code,setName}) {
                     setStockDatas(value.stockData);
                     // @ts-ignore
                     setStockPrices(value.priceLibrary.slice());
-                    //setDatas(Object.entries(value.stockData));
                     setDatas(order(value.stockData))
                 }).catch((reason) => {
                 console.log("getStockDetail error: " + reason)
@@ -124,7 +123,15 @@ export function StockDisplay({code,setName}) {
 
     },[])
 
+    const [loadingCollect,setLoadingCollect]=useState(false);
+    const [loadingHold,setLoadingHold]=useState(false);
+
     function handleCollect(type:number) {
+        switch (type) {
+            case 0:setLoadingCollect(true);break;
+            case 1:setLoadingHold(true);break;
+        }
+
         stockMgr().collectStock({id:userSlice.userId,stockCode:code,type:type})
             .then((value) => {
                 if(value.state!==2)
@@ -132,10 +139,19 @@ export function StockDisplay({code,setName}) {
                         setIsCollected({collect:value.state == 1,hold:isCollected.hold})
                         :
                         setIsCollected({collect:isCollected.collect,hold:value.state == 1})
+                switch (type) {
+                    case 0:setLoadingCollect(false);break;
+                    case 1:setLoadingHold(false);break;
+                }
             }).catch((reason) => {
-            alert("网络错误,请求失败!")
-            console.log("collectStock error: " + reason)
+                alert("网络错误,请求失败!")
+                console.log("collectStock error: " + reason)
+                switch (type) {
+                    case 0:setLoadingCollect(false);break;
+                    case 1:setLoadingHold(false);break;
+                }
         });
+
 
     }
 
@@ -145,7 +161,8 @@ export function StockDisplay({code,setName}) {
             <span>股票详情</span>
             {userSlice.isLogIn &&
                 <div>
-                    <button onClick={()=>handleCollect(0)}>{isCollected.collect?"已收藏":"+收藏"}</button>
+                    <button onClick={()=>handleCollect(0)}>{loadingCollect?"收藏中":isCollected.collect?"已收藏":"+收藏"}</button>
+                    <button onClick={()=>handleCollect(1)}>{loadingHold?"持有中":isCollected.hold?"已持有":"+持有"}</button>
                 </div>
             }
         </div>

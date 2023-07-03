@@ -2,10 +2,6 @@ import {BaseManager, getManager, manager} from "../../app/BaseManager";
 import axios, {AxiosError, AxiosRequestConfig, Method} from "axios";
 import {StringUtils} from "../../utils/StringUtils";
 
-// const Host = "https://contri.build/";
-// const Host = "https://buidlers.community/";
-// const Host = "https://80.209.229.233:3000/";
-// const Host = "http://localhost:3060/";
 const Host = "/"
 
 const DefaultTimeout = 30000;

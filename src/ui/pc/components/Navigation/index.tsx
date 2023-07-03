@@ -9,6 +9,7 @@ import {StockInfo} from "../../../../modules/stock/StockSlice";
 import {stockMgr} from "../../../../modules/stock/StockManager";
 import {userMgr} from "../../../../modules/user/UserManager";
 import {defaultUserSlice, UserContext} from "../../../root";
+import {create} from "domain";
 
 const s = makeStyle(style);
 
@@ -40,7 +41,6 @@ export function Navigation(props) {
                     console.log("searchStock return: "+value.stockCode+","+value.name)
                     if(value.stockCode!=="null")
                     {
-                        //props.setSearchResult(value.stockCode, value.name);
                         navigate(`/stock/${value.stockCode}`);
                     }
                     else navigate(`/none`);
@@ -99,6 +99,11 @@ export function Navigation(props) {
         else if(userSlice!==defaultUserSlice)
             setUserSlice({...defaultUserSlice})
 
+        //防止刷新页面后登录状态丢失
+        if(sessionStorage.getItem("LOGIN")=="TRUE" && userSlice.islogin!=true) {
+            setUserSlice(JSON.parse(sessionStorage.getItem("USER")));
+        }
+
         console.log("登录状态："+userSlice.isLogIn)
     },[userSlice.userId,userSlice.isLogIn])
 
@@ -122,6 +127,10 @@ export function Navigation(props) {
 
         console.log(userSlice)
         alert("已退出登录")
+
+        //更新sessionStorage中的USER
+        sessionStorage.setItem("USER",JSON.stringify(defaultUserSlice));
+        sessionStorage.setItem("LOGIN","FALSE");
     }
 
 
@@ -162,9 +171,9 @@ export function Navigation(props) {
     </div>
 
     function LogWindow({close}) {
-        //const {userSlice, setUserSlice} = useContext(UserContext);
 
         const [toLog, setToLogin] = useState(true);
+        const [loading,setLoading]=useState(false);
 
         const toggleForm = () => {
             setToLogin(!toLog);
@@ -172,38 +181,36 @@ export function Navigation(props) {
 
         const handleSubmit = (event) => {
             event.preventDefault();
+            setLoading(true)
+            const text = (toLog?"登录":"注册")
 
-            // 在这里处理表单提交
-            if(toLog){
-                //提交登录请求
-                userMgr().logInUser({phone:event.target.phone.value, password:event.target.password.value})
-                    .then((value)=>{
-                        if(value.state){
-                            alert("登录成功");
-                            const currentUserSlice = userSlice;
-                            currentUserSlice.userId = value.id;
-                            currentUserSlice.isLogIn=true;
-                            setUserSlice({...currentUserSlice});
-                            close()
-                        } else alert("登录失败");
-                    })
-                    .catch((reason)=>{console.log("登录请求error：" +reason)})
-            }
-            else if(!toLog){
-                //提交注册请求
-                userMgr().createUser({phone:event.target.phone.value, password:event.target.password.value})
-                    .then((value)=>{
-                        if(value.state){
-                            alert("注册成功");
-                            const currentUserSlice = userSlice;
-                            currentUserSlice.userId = value.id;
-                            currentUserSlice.isLogIn=true;
-                            setUserSlice({...currentUserSlice});
-                            close()
-                        } else alert("注册失败");
-                    })
-                    .catch((reason)=>{console.log("注册请求error：" +reason)})
-            }
+            const params = {phone:event.target.phone.value, password:event.target.password.value};
+
+            //在这里处理表单提交
+            //提交登录请求
+            (toLog?userMgr().logInUser:userMgr().createUser)(params)
+                .then((value)=>{
+                    setLoading(false)
+                    if(value.state){
+                        alert(text+"成功");
+                        //更新context中的UserSlice
+                        const currentUserSlice = userSlice;
+                        currentUserSlice.userId = value.id;
+                        currentUserSlice.isLogIn=true;
+                        setUserSlice({...currentUserSlice});
+                        //更新sessionStorage中的USER
+                        sessionStorage.setItem("USER",JSON.stringify({...currentUserSlice}));
+                        sessionStorage.setItem("LOGIN","TRUE");
+                        //关闭窗口
+                        close()
+                    } else alert(text+"失败");
+                })
+                .catch((reason)=>{
+                    console.log(text+"请求error：" +reason);
+                    setLoading(false);
+                    alert(text+"失败");
+                })
+
         };
 
         const virtualLoginForTest = () =>{
@@ -214,6 +221,10 @@ export function Navigation(props) {
             currentUserSlice.avatar=require("../../../../assets/icons/testAvatar.jpg");
             currentUserSlice.phone="10086";
             setUserSlice({...currentUserSlice});
+
+            //更新sessionStorage中的USER
+            sessionStorage.setItem("USER",JSON.stringify({...currentUserSlice}));
+            sessionStorage.setItem("LOGIN","TRUE");
 
             // if(props.setUserSlice)
             //     props.setUserSlice({...currentUserSlice})
@@ -236,7 +247,7 @@ export function Navigation(props) {
                         <input type="password" id="password" name="password" />
                     </div>
                 </div>
-                <button type="submit">{toLog ? "登录" : "注册"}</button>
+                <button type="submit">{toLog ? (loading?"登录中…":"登录") : (loading?"注册中…":"注册")}</button>
             </form>
             <div className={s("form-toggle")}>
                 <span>{toLog ? "没有账号？" : "已有账号？"}</span>

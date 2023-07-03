@@ -20,7 +20,6 @@ export const Common = {
 	toTwitter(url?) {
 		if (typeof url != "string") url = "";
 		open(url || DefaultTwitter);
-		// location.href = url || "https://twitter.com/contri_build";
 	},
 	toMedium(url?) {
 		if (typeof url != "string") url = "";

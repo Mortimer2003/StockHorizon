@@ -31,6 +31,7 @@ export type StockInfo = {
 }
 
 export type RTP = {
+    code: string,
     price: string,
     abChange: string,
     reChange: string

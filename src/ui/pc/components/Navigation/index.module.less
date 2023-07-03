@@ -1,7 +1,8 @@
 
 .navigation{
   display: flex;
-  width: 100vw; //TODO:待修改
+  width: 100vw;
+  min-height: 60px;
   height: 8vh;
   padding-top: 2vh;
   background-color: rgba(255, 255, 255, 0.6);
@@ -12,6 +13,7 @@
     top: 1vh;
     left: 20px;
     margin-right: 20px;
+    min-height: 40px;
     height: 5vh;
     width: auto;
   }
@@ -21,6 +23,7 @@
     top: 1vh;
     left: 20px;
     margin-right: 20px;
+    min-height: 40px;
     height: 5vh;
     width: auto;
     cursor: pointer;
@@ -34,7 +37,6 @@
 
     .name{
       font-family: 'Alimama';
-      //flex-grow: 1;
       font-size: 24px;
       margin-bottom: 1vh;
     }
@@ -52,10 +54,11 @@
     /* Layout Properties */
     position: fixed;
     width: 50vw;
+    min-height: 30px;
     height: 5vh;
     left: 100px;
     border-radius: 10vh;
-    margin-top: 1vh;
+    margin-top: max(1vh,10px);
     margin-left: 12vw;
     /* UI Properties */
     background: #a4d4e8 0 0 no-repeat padding-box;
@@ -92,12 +95,13 @@
   }
 
   .user{
+
     flex-grow: 1;
 
     .content{
       position: relative;
       float: right;
-      top: -1.5vh;
+      top: -0.5vh;
       width: 65.44px;
       //width: 6vh;
       display: flex;
@@ -129,8 +133,8 @@
 
       }
       img{
-        height: 50px;
-        width: 50px;
+        height: 40px;
+        width: 40px;
         border-radius: 50%;
         cursor: pointer;
 
@@ -223,6 +227,12 @@
       background: linear-gradient(269deg, #CB8FE8 0%, #8FB6E8 100%);
       border:none;
       border-radius: 5px;
+      box-shadow: 0 3px 3px #00000029;
+    }
+    button:active{
+      opacity: 0.5;
+      box-shadow:none;
+
     }
   }
 

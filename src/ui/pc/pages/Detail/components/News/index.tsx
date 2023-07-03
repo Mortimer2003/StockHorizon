@@ -10,46 +10,20 @@ import {stockMgr} from "../../../../../../modules/stock/StockManager";
 const s = makeStyle(style);
 
 export function News({code}) {
-    const [newsList,setNewsList] = useState<StockNewsAbout[]>([
-        {
-            title:"标题1",
-            date:"",
-            source:"未知来源",
-            url:"www.123.com",
-            information:"测试信息测试信息测试信息测试信息测试信息测试信息测试信息测试信息测试信息测试信息"
-        },
-        {
-            title:"标题2",
-            date:"",
-            source:"未知来源",
-            url:"www.123.com",
-            information:"测试信息测试信息测试信息测试信息测试信息测试信息测试信息测试信息测试信息测试信息"
-        },
-        {
-            title:"标题3",
-            date:"",
-            source:"未知来源",
-            url:"www.123.com",
-            information:"测试信息测试信息测试信息测试信息测试信息测试信息测试信息测试信息测试信息测试信息"
-        },
-        {
-            title:"标题4",
-            date:"",
-            source:"未知来源",
-            url:"www.123.com",
-            information:"测试信息测试信息测试信息测试信息测试信息测试信息测试信息测试信息测试信息测试信息"
-        },
-        {
-            title:"标题5",
-            date:"",
-            source:"未知来源",
-            url:"www.123.com",
-            information:"测试信息测试信息测试信息测试信息测试信息测试信息测试信息测试信息测试信息测试信息"
-        },
-    ])
+    const noneItem = {
+        title:"",
+        date:"",
+        source:"",
+        url:"",
+        information:""
+    }
+    const pageSize = 4; // 每页展示的新闻条数
+    const noneList=Array(pageSize).fill(noneItem);
+
+    const [newsList,setNewsList] = useState<StockNewsAbout[]>(noneList);
 
     const [currentPage, setCurrentPage] = useState(1);
-    const pageSize = 4; // 每页展示的新闻条数
+
 
     const startIndex = (currentPage - 1) * pageSize;
     const endIndex = startIndex + pageSize;
@@ -63,6 +37,17 @@ export function News({code}) {
     const handleNextClick = () => {
         setCurrentPage((prevPage) => Math.min(prevPage + 1, Math.ceil(newsList.length / pageSize)));
     };
+
+    useEffect(()=>{
+        stockMgr().getNewsAbout({stockCode:code, limit:1640966400000, offset:0, count:30})
+            .then((value)=>{
+                console.log("getNewsAbout return: "+value)
+                setNewsList(value.newsList);
+            })
+            .catch((reason)=>{
+                console.log("getNewsAbout error: "+reason)
+            })
+    },[])
 
     return <div className={s('news')}>
         <div className={s("title")}>

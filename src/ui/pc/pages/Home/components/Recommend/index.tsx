@@ -14,7 +14,7 @@ const s = makeStyle(style);
 export function Recommend() {
     const {userSlice, setUserSlice}=useContext(UserContext)
 
-    const noneList=Array(5).fill({name:"",code:"",degree:null});
+    const noneList=Array(5).fill({name:"加载中……",code:"",degree:null});
 
     // @ts-ignore
     const [buyList,setBuyList]=useState<StockRecom[]>(noneList);
@@ -24,6 +24,9 @@ export function Recommend() {
     const [tagIdx, setTagIdx] = useState(0);
 
     useEffect(()=>{
+        //点击按钮切换tag后先置空列表
+        setSellList(noneList);
+        setBuyList(noneList);
 
         function makeRequest() {
             stockMgr().getStockRecom({type: tagIdx, offset: 0, count: 100, id:userSlice.userId})
@@ -55,7 +58,7 @@ export function Recommend() {
         setLogin(userSlice.isLogIn);
     },[userSlice.isLogIn])
 
-    const menuNames=["全部","收藏"]
+    const menuNames=["全部","收藏","持有"]
 
     const handleMenuClick = (index, name) => {
         setTagIdx(index);

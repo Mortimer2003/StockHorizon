@@ -14,44 +14,39 @@ import axios from "axios";
 
 const s = makeStyle(style);
 
-export function Collected({id,list}:{id:string,list:Collect[]}) {
+export function Collected({id,list,type}:{id:string,list:Collect[],type:number}) {
 
     if(list==null) list = [{stockCode : "", name : "", strategy : null, degree : null}]
 
     const stockCode = list?.map(obj => obj.stockCode);
 
-    function RTP({index}) {
-        const [stockRTP,setStockRTP] = useState({
-            price: "",
-            abChange: "",
-            reChange: "",
-        })
-        const [color,setColor] = useState("")
+    const [stockRTPs,setStockRTPs] = useState({})
 
-        useEffect(()=>{
-            //TODO：定时请求最新股价
-        },[])
+    useEffect(()=>{
 
-        //TODO：对收藏进行排序
-        return <>
-            {stockRTP?.price ?
-                <div className={s("price", color)}>{stockRTP.price}</div>
-                :
-                <div>{list[index].name ? "加载中..." : "-"}</div>
-            }
-            <div className={s(color)}>
-                {stockRTP?.abChange && stockRTP?.reChange?
-                    <>
-                        <div>{stockRTP.abChange}</div>
-                        <div>{stockRTP?.reChange}</div>
-                    </>
-                    :
-                    <div>{list[index].name ? "加载中..." : "-"}</div>
-                }
-            </div>
-        </>
-    }
+        function makeRequest() {
+            stockMgr().getCollectRTP({id,type})
+                .then((value) => {
 
+                    console.log("get RTP return: " + value)
+                    // @ts-ignore
+                    setStockRTPs(value.rtplist.reduce((acc,obj)=>{
+                        const { code, price, abChange, reChange } = obj;
+                        const color = (Number(abChange)==0?"":Number(abChange)>0?"red":"green")
+                        acc[code] = { price, abChange, reChange, color};
+                        return acc;
+                    }, {}))
+                }).catch((reason) => {
+                console.log("get RTP error: " + reason)
+            });
+        }
+
+        makeRequest();
+        const timer = setInterval(makeRequest, 60 * 1000);
+        return () => {
+            clearInterval(timer);
+        };
+    },[])
 
     return <>
         <div className={s("title")}>
@@ -71,7 +66,23 @@ export function Collected({id,list}:{id:string,list:Collect[]}) {
                             {name?<div className={s("name")}>{name}</div>:<div>-</div>}
                             <div className={s("code")}>{stockCode}</div>
                         </div>
-                        <RTP index={index}/>
+                        <>
+                            {stockRTPs[stockCode]?.price ?
+                                <div className={s("price", stockRTPs[stockCode]?.color)}>{stockRTPs[stockCode]?.price}</div>
+                                :
+                                <div>{name ? "加载中..." : "-"}</div>
+                            }
+                            <div className={s(stockRTPs[stockCode]?.color)}>
+                                {stockRTPs[stockCode]?.abChange && stockRTPs[stockCode]?.reChange?
+                                    <>
+                                        <div>{stockRTPs[stockCode]?.abChange}</div>
+                                        <div>{stockRTPs[stockCode]?.reChange}</div>
+                                    </>
+                                    :
+                                    <div>{name ? "加载中..." : "-"}</div>
+                                }
+                            </div>
+                        </>
                         {degree?<div className={s("strategy")}>{strategy==0?"推荐减仓":"推荐加仓"}</div>:<div>-</div>}
                         {degree?<div className={s("degree")}>{degree}</div>:<div>-</div>}
                     </div>
@@ -85,36 +96,22 @@ export function User(props) {
 
     const {userSlice, setUserSlice}=useContext(UserContext)
     const [isLogin, setIsLogin] = useState(userSlice.isLogIn)
-    const address = useParams<{ address: string }>().address;
+    const id = useParams<{ address: string }>().address;
 
     const [pageIdx, setPageIdx] = useState(0);
 
     const noneList:Collect[]=[{
-        stockCode : "001",
-        name : "收藏1",
-        strategy : 0,
-        degree : 5,
-    },{
-        stockCode : "002",
-        name : "收藏2",
-        strategy : 1,
-        degree : 6,
-    },{
-        stockCode : "003",
-        name : "收藏3",
-        strategy : 0,
-        degree : 7,
+        stockCode : "",
+        name : "",
+        strategy : null,
+        degree : null,
     }]
 
-    const [collectList, setCollectList] = useState<{collectList:Collect[]}>({collectList:noneList});
+    const [collectList, setCollectList] = useState<{collectList:Collect[],holdList:Collect[]}>({collectList:noneList, holdList:noneList});
 
-    const {id} = useParams<{ id: string }>() // 目标Address
-
-    const menuNames=["我的收藏"]
+    const menuNames=["收藏","持有"]
 
     const handleMenuClick = (index, name) => setPageIdx(index);
-
-    const [selectedFile, setSelectedFile] = useState(null);
 
     const [showEditWindow,setShowEditWindow] = useState(false)
 
@@ -125,8 +122,6 @@ export function User(props) {
     const handleEdit = () => {
         setShowEditWindow(true);
     };
-
-
 
     function EditWindow({close}) {
         const id=userSlice.userId;
@@ -145,7 +140,6 @@ export function User(props) {
                 setPreviewURL(reader.result);
             };
             reader.readAsDataURL(file);
-            // TODO:防止保存后图片url消失
         };
 
         const handleNameChange = (event) => {
@@ -161,8 +155,48 @@ export function User(props) {
             formData.append('avatar', avatar);
             formData.append('name', name);
 
-            //TODO：发送 POST 请求 修改用户信息
+            // 发送 POST 请求 修改用户信息
+            userMgr().editUserInfo(formData)
+                .then(value => {
+                    // 请求成功处理逻辑
+                    // value.state: 0失败 1仅头像更新 2仅昵称更新 3头像与昵称都更新
+                    const currentUserSlice = userSlice;
+                    switch (value.state){
+                        case 0: alert("修改失败！");
+                            break;
+                        case 1: currentUserSlice.avatar=value.avatarUrl;
+                            setUserSlice({...currentUserSlice});
+                            //更新sessionStorage中的USER
+                            sessionStorage.setItem("USER",JSON.stringify({...currentUserSlice}));
+                            alert("修改成功！");
+                            break;
+                        case 2: currentUserSlice.name=value.name;
+                            setUserSlice({...currentUserSlice});
+                            //更新sessionStorage中的USER
+                            sessionStorage.setItem("USER",JSON.stringify({...currentUserSlice}));
+                            alert("修改成功！");
+                            break;
+                        case 3: currentUserSlice.avatar=value.avatarUrl;
+                            currentUserSlice.name=value.name;
+                            setUserSlice({...currentUserSlice});
+                            //更新sessionStorage中的USER
+                            sessionStorage.setItem("USER",JSON.stringify({...currentUserSlice}));
+                            alert("修改成功！");
+                            break;
+                    }
+                    console.log(userSlice)
+                    close();
 
+                    // 清空表单
+                    setAvatar(null);
+                    setPreviewURL(userSlice.avatar);
+                    setName(userSlice.name);
+                })
+                .catch(error => {
+                    // 请求失败处理逻辑
+                    console.log("修改信息失败："+error);
+
+                });
         };
 
 
@@ -189,12 +223,14 @@ export function User(props) {
         </div>
     }
 
+    //获取用户收藏
     useEffect(()=>{
 
-        stockMgr().getCollect({id:address}).then((value) => {
+        stockMgr().getCollect({id:id}).then((value) => {
             console.log("getCollect return: " + value)
             // @ts-ignore
             setCollectList(value);
+
         }).catch((reason) => {
             console.log("getCollect error: " + reason)
         });
@@ -202,7 +238,7 @@ export function User(props) {
     },[pageIdx])
 
     useEffect(()=>{
-        if(!userSlice.isLogIn)
+        if(sessionStorage.getItem("LOGIN")=="FALSE")
         {
             setIsLogin(false)
             alert("请先登录！");
@@ -224,8 +260,17 @@ export function User(props) {
 
                     <div className={s("edit")} onClick={handleEdit}>编辑信息</div>
 
+                    <div className={s("menu")}>
+                        {menuNames.map((name, index) => (
+                            <div key={index}
+                                 onClick={() => handleMenuClick(index, name)}
+                                 className={s(`item${index+1}`, pageIdx == index && "current", 'option')}>
+                                {name}
+                            </div>
+                        ))}
+                    </div>
                     <div className={s("collected")}>
-                        <Collected id={id} list={collectList.collectList}/>
+                        <Collected id={id} list={pageIdx==0?collectList.collectList:collectList.holdList} type={pageIdx}/>
                     </div>
 
                     {showEditWindow && (

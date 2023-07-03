@@ -28,6 +28,5 @@ export function singletonGetter<T>(clazz: Constructor<T>) {
 }
 
 export function getSingleton<T>(clazz: Constructor<T>) {
-	// console.error("[USE] ", clazz);
 	return SingletonUtils.context.instance(clazz);
 }

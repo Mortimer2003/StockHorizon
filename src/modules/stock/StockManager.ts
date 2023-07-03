@@ -8,7 +8,7 @@ import {get, post, put} from "../http/NetworkManager";
 import {
     Collect,
     Recom,
-    RecomType,
+    RecomType, RTP,
     StockDatas,
     StockEnterprise,
     StockHot,
@@ -73,6 +73,11 @@ export const GetCollect = get<
     { collectList:Collect[], holdList:Collect[] }
     >("/api/user/getCollect")
 
+export const GetCollectRTP = get<
+    { id:string, type:number },
+    { rtplist:RTP[]}
+    >("/api/user/getCollectRTP")
+
 @manager
 export class StockManager extends BaseAsyncTaskManager {
 
@@ -124,6 +129,11 @@ export class StockManager extends BaseAsyncTaskManager {
     @asyncTask
     public async getCollect(params:{id:string}) {
         return await GetCollect(params);
+    }
+
+    @asyncTask
+    public async getCollectRTP(params:{id:string, type:number}) {
+        return await GetCollectRTP(params);
     }
 
 }

@@ -11,7 +11,6 @@
     align-items: center;
     text-align: center;
 
-    //top: 16vh;
     padding-top:16vh;
     padding-bottom: 40px;
     position: relative;
@@ -19,13 +18,15 @@
     overflow-y: auto;
 
     .avatar{
+      min-width: 100px;
       width: 18vh;
+      min-height: 100px;
       height: 18vh;
-      //overflow: hidden;
       border-radius: 50%;
       align-items: center;
       user-select: none;
       overflow: hidden;
+      flex-shrink: 0;
 
       img{
         width: 100%;
@@ -39,9 +40,8 @@
 
 
     .name{
-      font-size: 5vh;
+      font-size: max(5vh,30px);
       font-weight: bolder;
-      //background: linear-gradient(269deg, #CB8FE8 0%, #8FB6E8 100%);
       background-color: white;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -55,12 +55,13 @@
     .edit{
       margin-top: 1vh;
       margin-bottom: 3vh;
-
       padding: 1vh;
 
       border: 1px solid rgba(255,255,255,0.8);
       border-radius: 10vh;
       background-color: rgba(0,0,0,0.05);
+
+      cursor: pointer;
     }
 
     .tag{
@@ -91,15 +92,13 @@
       }
 
       .option {
-        //width: 10vh;
         font-size: 16px;
         font-weight: bold;
         cursor: pointer;
 
-        margin: 3.9vh 1vw;
+        margin: 1vh 1vw;
         padding: 1.5vh 1vw;
         white-space: nowrap;
-        //background-color: #B37775;
       }
 
       .item1::before,
@@ -118,8 +117,6 @@
 }
 
 .collected{
-  //display: flex;
-  //background-color: rgba(255,255,255,0.2);
   background-color: rgba(0,0,0,0.1);
   border-radius: 20px;
 
@@ -234,9 +231,6 @@
           width: 70%;
           max-height: 100px;
 
-          //display: flex;
-          //flex-direction: column;
-          //align-items: end;
         }
 
         input{
