@@ -1,62 +1,46 @@
 import style from "./index.module.css";
 import {makeStyle} from "../../../../../../utils/CSSUtils";
 
-import React, {useState, useRef, useEffect} from "react";
+import React, {useState, useRef, useEffect, useContext} from "react";
 
 import {Types} from "aptos";
 import {Link} from "react-router-dom";
 import {StockRecom} from "../../../../../../modules/stock/StockSlice";
 import {stockMgr} from "../../../../../../modules/stock/StockManager";
+import {UserContext} from "../../../../../root";
 
 const s = makeStyle(style);
 
 export function Recommend() {
 
+    const {userSlice, setUserSlice}=useContext(UserContext)
+
+    const noneList=Array(5).fill({name:"加载中……",code:"",degree:null});
+
     // @ts-ignore
-    const [buyList,setBuyList]=useState<StockRecom[]>([
-        {name:"",code:"",degree:null},
-        {name:"",code:"",degree:null},
-        {name:"",code:"",degree:null},
-        {name:"",code:"",degree:null},
-        {name:"",code:"",degree:null},
-    ]);
+    const [buyList,setBuyList]=useState<StockRecom[]>(noneList);
     // @ts-ignore
-    const [sellList,setSellList]=useState<StockRecom[]>([
-        {name:"",code:"",degree:null},
-        {name:"",code:"",degree:null},
-        {name:"",code:"",degree:null},
-        {name:"",code:"",degree:null},
-        {name:"",code:"",degree:null},
-    ]);
+    const [sellList,setSellList]=useState<StockRecom[]>(noneList);
 
     const [tagIdx, setTagIdx] = useState(0);
 
     useEffect(()=>{
+        //点击按钮切换tag后先置空列表
+        setSellList(noneList);
+        setBuyList(noneList);
 
         function makeRequest() {
-            stockMgr().getStockRecom({type: tagIdx, offset: 0, count: 100, id:global.UserSlice.userId})
+            stockMgr().getStockRecom({type: tagIdx, offset: 0, count: 100, id:userSlice.userId})
                 .then((value) => {
 
                     console.log("getStockRecom return: " + value)
 
                     if(value==null||value.buyList==null)
-                        setBuyList([
-                            {name:"",code:"",degree:null},
-                            {name:"",code:"",degree:null},
-                            {name:"",code:"",degree:null},
-                            {name:"",code:"",degree:null},
-                            {name:"",code:"",degree:null},
-                        ])
+                        setBuyList(noneList)
                     else setBuyList(value.buyList);
 
                     if(value==null||value.sellList==null)
-                        setSellList([
-                            {name:"",code:"",degree:null},
-                            {name:"",code:"",degree:null},
-                            {name:"",code:"",degree:null},
-                            {name:"",code:"",degree:null},
-                            {name:"",code:"",degree:null},
-                        ])
+                        setSellList(noneList)
                     else setSellList(value.sellList);
 
                 })
@@ -67,17 +51,15 @@ export function Recommend() {
 
         makeRequest();
         setInterval(makeRequest, 60 * 60 * 1000);
-
     },[tagIdx])
 
-    //TODO:处理tag切换后的请求发起
 
-    const [login,setLogin] = useState(global.UserSlice.isLogIn)
+    const [login,setLogin] = useState(userSlice.isLogIn)
     useEffect(()=>{
-        setLogin(global.UserSlice.isLogIn);
-    },[global.UserSlice.isLogIn])
+        setLogin(userSlice.isLogIn);
+    },[userSlice.isLogIn])
 
-    const menuNames=["全部","持有","收藏"]
+    const menuNames=["全部","收藏","持有"]
 
     const handleMenuClick = (index, name) => {
         setTagIdx(index);
@@ -87,14 +69,11 @@ export function Recommend() {
     const [currentPageOfSell, setCurrentPageOfSell] = useState(1);
     const pageSize = 5; // 每页展示的条数
 
-    const startIndexOfBuy = (currentPageOfBuy - 1) * pageSize;
-    const endIndexOfBuy = startIndexOfBuy + pageSize;
-    const startIndexOfSell = (currentPageOfSell - 1) * pageSize;
-    const endIndexOfSell = startIndexOfSell + pageSize;
+    const startIndex = [(currentPageOfBuy - 1) * pageSize,(currentPageOfSell - 1) * pageSize];
+    const endIndex = startIndex.map(it=>it + pageSize);
 
-
-    const currentBuys = buyList.slice(startIndexOfBuy, endIndexOfBuy);
-    const currentSells = sellList.slice(startIndexOfSell, endIndexOfSell);
+    const currentBuys = buyList.slice(startIndex[0], endIndex[0]);
+    const currentSells = sellList.slice(startIndex[1], endIndex[1]);
 
     const handlePrevClickOfBuy = () => {
         setCurrentPageOfBuy((prevPage) => Math.max(prevPage - 1, 1));
@@ -105,7 +84,6 @@ export function Recommend() {
     const handlePrevClickOfSell = () => {
         setCurrentPageOfSell((prevPage) => Math.max(prevPage - 1, 1));
     };
-
     const handleNextClickOfSell = () => {
         setCurrentPageOfSell((prevPage) => Math.min(prevPage + 1, Math.ceil(sellList.length / pageSize)));
     };

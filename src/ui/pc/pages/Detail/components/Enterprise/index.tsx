@@ -12,10 +12,9 @@ const s = makeStyle(style);
 const names=["名称","简介","网址","地址","电话"]
 
 export function Enterprise({code, setName}) {
-    const [enterpriseInfo,setEnterpriseInfo] = useState<StockEnterprise>({ name:"",introduction:"",web:"",address:"",phone:""})
+    const [enterpriseInfo,setEnterpriseInfo] = useState<StockEnterprise>({ name:"XX有限公司",introduction:"这里是公司介绍这里是公司介绍这里是公司介绍这里是公司介绍这里是公司介绍这里是公司介绍这里是公司介绍这里是公司介绍这里是公司介绍这里是公司介绍这里是公司介绍这里是公司介绍",web:"www.123.com",address:"广东省广州市华南理工大学",phone:"10086"})
 
     useEffect(()=>{
-
         stockMgr().getEnterprise({stockCode:code})
             .then((value)=>{
                 console.log("getEnterprise return: "+value)
@@ -25,7 +24,6 @@ export function Enterprise({code, setName}) {
             .catch((reason)=>{
                 console.log("getEnterprise error: "+reason)
             })
-
     },[])
 
     return <div className={s('enterprise')}>
@@ -37,10 +35,10 @@ export function Enterprise({code, setName}) {
                 index==0?
                     <></>
                     :
-                names[index]=="网址"?
-                    <div><b>网址：</b><a href={value} target="_blank">{value}</a></div>
-                    :
-                    <div className={s(names[index]=="简介"?"intro":"")}><b>{names[index]}</b>：{value}</div>
+                    names[index]=="网址"?
+                        <div><b>网址：</b><a href={value} target="_blank">{value}</a></div>
+                        :
+                        <div className={s(names[index]=="简介"?"intro":"")}><b>{names[index]}</b>：{value}</div>
             )}
         </div>
     </div>

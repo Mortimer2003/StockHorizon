@@ -18,7 +18,7 @@ const s = makeStyle(style);
 export function Home(props) {
 
     return <div className={s('home')}>
-        <Navigation page={"home"} /*searchResult={props.searchResult} setSearchResult={props.setSearchResult}*//>
+        <Navigation page={"home"}/>
 
         <div className={s('content')}>
             <div className={s("top")}>
@@ -30,5 +30,3 @@ export function Home(props) {
     </div>
 
 }
-
-

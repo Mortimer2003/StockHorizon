@@ -55,7 +55,6 @@ export class PromiseUtils {
 			let retryTimes = 0;
 			let retry = () => {
 				retryTimes++;
-				// console.log("第" + retryTimes + "次尝试");
 				if (retryTimes > maxRetryTimes)
 					reject();
 				else

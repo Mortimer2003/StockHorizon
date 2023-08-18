@@ -15,14 +15,13 @@ const s = makeStyle(style);
 
 export function Detail(props) {
 
-
     const code = useParams<{ stockCode: string }>().stockCode;
     const [name,setName] = useState("");
 
     return <div className={s('detail')}>
-        <Navigation page={"detail"} code={code} name={name} /* searchResult={props.searchResult} setSearchResult={props.setSearchResult}*//> {/*TODO：这里需要传入name参数*/}
+        <Navigation page={"detail"} code={code} name={name}/>
         <div className={s('content')}>
-            <StockDisplay code={code}/>
+            <StockDisplay code={code} setName={setName}/>
             <div className={s('right')}>
                 <Enterprise code={code} setName={setName}/>
                 <News code={code}/>

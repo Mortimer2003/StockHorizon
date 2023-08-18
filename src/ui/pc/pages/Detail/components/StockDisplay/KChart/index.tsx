@@ -45,7 +45,6 @@ function calculateMA(dayCount: number, data: { values: number[][] }) {
 
 
 export function KChart({rawData}) {
-    //let rawDataRef = rawData;
     const [chartInstance, setChartInstance] = useState<echarts.ECharts>();
     const [chartOptions, setChartOptions] = useState(null);
     const chartRef = useRef<HTMLDivElement>();
@@ -97,7 +96,6 @@ export function KChart({rawData}) {
                     obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 30;
                     return obj;
                 }
-                // extraCssText: 'width: 170px'
             },
             axisPointer: {
                 link: [
@@ -292,7 +290,7 @@ export function KChart({rawData}) {
             areas: [
                 {
                     brushType: 'lineX',
-                    coordRange: ['2023-01-01', '2023-04-1'], //TODO:这部分怎么改
+                    coordRange: ['2023-01-01', '2023-04-1'],
                     xAxisIndex: 0,
                 },
             ],

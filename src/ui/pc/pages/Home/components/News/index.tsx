@@ -10,33 +10,13 @@ import {stockMgr} from "../../../../../../modules/stock/StockManager";
 const s = makeStyle(style);
 
 export function News() {
-    const [newsList,setNewsList] = useState<StockNews[]>([
-        {
-            content:"",
-            date:"", 
-            url:""
-        },
-        {
-            content:"",
-            date:"", 
-            url:""
-        },
-        {
-            content:"",
-            date:"", 
-            url:""
-        },
-        {
-            content:"",
-            date:"", 
-            url:""
-        },
-        {
-            content:"",
-            date:"", 
-            url:""
-        },
-    ])
+    const noneItem = {
+        content:"",
+        date:"",
+        url:""
+    }
+    const noneList=Array(10).fill(noneItem);
+    const [newsList,setNewsList] = useState<StockNews[]>(noneList);
 
     useEffect(()=>{
 
@@ -96,6 +76,6 @@ export function News() {
                 </>
             )}
 
-            </div>
+        </div>
     </div>
 }

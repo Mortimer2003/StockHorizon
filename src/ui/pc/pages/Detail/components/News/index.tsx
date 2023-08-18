@@ -10,59 +10,20 @@ import {stockMgr} from "../../../../../../modules/stock/StockManager";
 const s = makeStyle(style);
 
 export function News({code}) {
-    const [newsList,setNewsList] = useState<StockNewsAbout[]>([
-        {
-            title:"",
-            date:"",
-            source:"",
-            url:"",
-            information:""
-        },
-        {
-            title:"",
-            date:"",
-            source:"",
-            url:"",
-            information:""
-        },
-        {
-            title:"",
-            date:"",
-            source:"",
-            url:"",
-            information:""
-        },
-        {
-            title:"",
-            date:"",
-            source:"",
-            url:"",
-            information:""
-        },
-        {
-            title:"",
-            date:"",
-            source:"",
-            url:"",
-            information:""
-        },
-    ])
+    const noneItem = {
+        title:"",
+        date:"",
+        source:"",
+        url:"",
+        information:""
+    }
+    const pageSize = 4; // 每页展示的新闻条数
+    const noneList=Array(pageSize).fill(noneItem);
 
-    useEffect(()=>{
-        // setNewsList(dataTest.newsList); //TODO:测试用,待删除
-
-        stockMgr().getNewsAbout({stockCode:code, limit:1640966400000, offset:0, count:15})
-            .then((value)=>{
-                console.log("getNewsAbout return: "+value)
-                setNewsList(value.newsList);
-            })
-            .catch((reason)=>{
-                console.log("getNewsAbout error: "+reason)
-            })
-    },[])
+    const [newsList,setNewsList] = useState<StockNewsAbout[]>(noneList);
 
     const [currentPage, setCurrentPage] = useState(1);
-    const pageSize = 3; // 每页展示的新闻条数
+
 
     const startIndex = (currentPage - 1) * pageSize;
     const endIndex = startIndex + pageSize;
@@ -76,6 +37,17 @@ export function News({code}) {
     const handleNextClick = () => {
         setCurrentPage((prevPage) => Math.min(prevPage + 1, Math.ceil(newsList.length / pageSize)));
     };
+
+    useEffect(()=>{
+        stockMgr().getNewsAbout({stockCode:code, limit:1640966400000, offset:0, count:30})
+            .then((value)=>{
+                console.log("getNewsAbout return: "+value)
+                setNewsList(value.newsList);
+            })
+            .catch((reason)=>{
+                console.log("getNewsAbout error: "+reason)
+            })
+    },[])
 
     return <div className={s('news')}>
         <div className={s("title")}>
@@ -103,6 +75,6 @@ export function News({code}) {
                 </>
             )}
 
-            </div>
+        </div>
     </div>
 }

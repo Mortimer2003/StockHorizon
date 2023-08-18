@@ -10,63 +10,21 @@ import {None} from "./pc/pages/None";
 const mobileAgents = ["Android", "iPhone", "iPad", "iPod", "Symbian"];
 const userAgent = navigator.userAgent;
 
-global.UserSlice = {
-	isLogIn:true, //TODO:改为false
+export const defaultUserSlice= {
+	isLogIn:false,
 	userId: "",
-	name:"user",
+	name: "user",
 	avatar:require("../assets/icons/user.png"),
-	phone:"",
+	phone: "",
 }
 
-window.onbeforeunload = function(event) {
-	// 将对象转换为 JSON 字符串并存储到本地存储中
-	localStorage.setItem('userData', JSON.stringify(global.UserSlice));
-}
+export const UserContext = React.createContext(null)
 
-let savedData = localStorage.getItem('userData');
-if (savedData) {
-	global.UserSlice = JSON.parse(savedData);
-}
-
-//————————————————————————————————————————————————————————————————————————————————
-
-global.SearchSlice = {
-	code:"null",
-	name:"null"
-}
-
-window.onbeforeunload = function(event) {
-	// 将对象转换为 JSON 字符串并存储到本地存储中
-	localStorage.setItem('searchData', JSON.stringify(global.SearchSlice));
-}
-
-savedData = localStorage.getItem('searchData');
-if (savedData) {
-	global.SearchSlice = JSON.parse(savedData);
-}
-
-//——————————————————————————————————————————————————————————————————————
-
-console.error = (function() {
-	let error = console.error;
-
-	return function(exception) {
-		if (
-			typeof exception === "string" &&
-			exception.indexOf("Each child in a list should have a unique") !== -1
-		) {
-			// do nothing
-			return;
-		}
-
-		// Call the original console.error function with all other types of exceptions
-		error.apply(console, arguments);
-	};
-})();
 
 export function Root() {
 	const [width, setWidth] = useState(window.innerWidth);
 	const [height, setHeight] = useState(window.innerHeight);
+	const [userSlice, setUserSlice] = useState({...defaultUserSlice});
 
 	const onResize = (e: UIEvent) => {
 		console.log("onResize", e, e.detail, window.innerWidth, window.innerHeight)
@@ -79,13 +37,7 @@ export function Root() {
 	const ratio = width / height;
 	const isMobile = ratio <= 0.75 || mobileAgents.some(ag => userAgent.includes(ag));
 
-	return isMobile ?
-		<BrowserRouter>
-			<Routes>
-				<Route path='/' element={<></>}/>
-			</Routes>
-		</BrowserRouter>
-		:
+	return <UserContext.Provider value={{userSlice,setUserSlice}}>
 		<BrowserRouter>
 			<Routes>
 				<Route path='' element={<Home/>}/>
@@ -94,6 +46,6 @@ export function Root() {
 				<Route path='/user/:address' element={<User/>}/>
 				<Route path='/stock/:stockCode' element={<Detail/>}/>
 			</Routes>
-
 		</BrowserRouter>
+	</UserContext.Provider>
 }

@@ -5,6 +5,7 @@ import React, {useState, useRef, useEffect} from "react";
 import {asyncTask, BaseAsyncTaskManager} from "../redux/BaseAsyncTaskManager";
 import {getManager, manager} from "../../app/BaseManager";
 import {get, post, put} from "../http/NetworkManager";
+import axios from "axios";
 
 export const CreateUser = get<
     { phone:string, password: string },
@@ -21,9 +22,12 @@ export const GetUserInfo = get<
     { name:string, phone:string, avatarUrl:string}
     >("/api/user/info")
 
-export const EditUserInfo = get<
-    { id:string, name?:string},
-    { state:boolean }
+// export const EditUserInfo = formData =>
+//     axios.post('/api/user/editInfo', formData)
+
+export const EditUserInfo =  post<
+    /*{ formData:FormData },*/FormData,
+    { state:number, name:string, avatarUrl:string}
     >("/api/user/editInfo")
 
 
@@ -39,7 +43,6 @@ export class UserManager extends BaseAsyncTaskManager {
     @asyncTask
     public async logInUser(params:{phone:string, password: string}) {
         console.log(params)
-
         return await LogInUser(params);
     }
 
@@ -49,8 +52,8 @@ export class UserManager extends BaseAsyncTaskManager {
     }
 
     @asyncTask
-    public async editUserInfo(edit:{id:string, name?:string, avatar?:FormData}) {
-        return await EditUserInfo({id:edit.id, name:edit.name});
+    public async editUserInfo(params/*:{formData: FormData}*/) {
+        return await EditUserInfo(params);
     }
 
 }

@@ -1,26 +1,27 @@
 import style from "./index.module.css";
 import {makeStyle} from "../../../../../../utils/CSSUtils";
 
-import React, {useState, useRef, useEffect} from "react";
+import React, {useState, useRef, useEffect, useContext} from "react";
 import {Types} from "aptos";
 
 import {KChart} from "./KChart";
-import {RTP, StockDatas, StockPrice} from "../../../../../../modules/stock/StockSlice";
+import {StockDatas, StockPrice} from "../../../../../../modules/stock/StockSlice";
 import {stockMgr} from "../../../../../../modules/stock/StockManager";
 import {useNavigate} from "react-router-dom";
+import {UserContext} from "../../../../../root";
 
 
 const s = makeStyle(style);
 
 function order(obj){
     const order = ["todayOpen", "yesterdayClose", "highest", "lowest","volume",
-                   "amount","turnoverRate","ttm","per","circulationMarketValue",
-                   "circulatingShares","mcap","zgb","ww52Highest","ww52Lowest"]
+        "amount","turnoverRate","ttm","per","circulationMarketValue",
+        "circulatingShares","mcap","zgb","ww52Highest","ww52Lowest"]
     return  order.map(key => obj[key]);
 }
 
 
-let noneDatas:StockDatas= {
+const noneDatas:StockDatas= {
     todayOpen:"",
     yesterdayClose:"",
     highest:"",
@@ -38,28 +39,14 @@ let noneDatas:StockDatas= {
     ww52Lowest:"",
 }
 
+const nonePrice:StockPrice=["",null,null,null,null,null]
+
 
 const names=["今开", "昨收", "最高", "最低", "成交量", "成交额", "换手率", "市盈(TTM)", "市净率", "流通值", "流通股", "总市值", "总股本", "52周高", "52周低"]
 
-function deepFreeze(array) {
-    // 冻结当前数组
-    Object.freeze(array);
-
-    // 递归冻结数组的每个元素
-    array.forEach((item) => {
-        if (Array.isArray(item)) {
-            deepFreeze(item); // 递归冻结子数组
-        }
-        // 冻结子数组的每个元素
-        Object.freeze(item);
-    });
-
-    return array;
-}
-
-
-export function StockDisplay({code}) {
+export function StockDisplay({code,setName}) {
     const navigate=useNavigate()
+    const {userSlice, setUserSlice}=useContext(UserContext)
 
     const [stockRTP,setStockRTP] = useState({
         price: "",
@@ -75,17 +62,19 @@ export function StockDisplay({code}) {
         hold: null
     })
     const [stockDatas,setStockDatas] = useState<StockDatas>(noneDatas);
-    const [stockPrices,setStockPrices] = useState<StockPrice[]>([
-        ["",null,null,null,null,null],
-        ["",null,null,null,null,null],
-        ["",null,null,null,null,null]
-    ]);
+    const [stockPrices,setStockPrices] = useState<StockPrice[]>(new Array(5).fill(nonePrice));
     const [datas,setDatas] = useState<any[]>();
 
     useEffect(()=>{
+        stockMgr().getEnterprise({stockCode:code})
+            .then((value)=>{
+                setName(value.enterpriseInfo.name);
+            })
+    },[])
 
+    useEffect(()=>{
         function makeRequest() {
-            stockMgr().getStockDetail({stockCode: code,id:global.UserSlice.isLogIn?global.UserSlice.isLogIn:""})
+            stockMgr().getStockDetail({stockCode: code,id:userSlice.isLogIn?userSlice.userId:""})
                 .then((value) => {
                     console.log("getStockDetail return: " + value)
 
@@ -94,16 +83,15 @@ export function StockDisplay({code}) {
 
                     setRecommend(value.recommend)
 
-                    global.UserSlice.isLogIn && setIsCollected({collect:value.isCollected.collect==0?false:value.isCollected.collect==1?true:null,hold:value.isCollected.hold==0?false:value.isCollected.hold==1?true:null})
+                    userSlice.isLogIn && setIsCollected({collect:value.isCollected.collect==0?false:value.isCollected.collect==1?true:null,hold:value.isCollected.hold==0?false:value.isCollected.hold==1?true:null})
 
                     setStockDatas(value.stockData);
                     // @ts-ignore
                     setStockPrices(value.priceLibrary.slice());
-                    //setDatas(Object.entries(value.stockData));
                     setDatas(order(value.stockData))
                 }).catch((reason) => {
-                    console.log("getStockDetail error: " + reason)
-                });
+                console.log("getStockDetail error: " + reason)
+            });
         }
 
         makeRequest();
@@ -113,11 +101,9 @@ export function StockDisplay({code}) {
         };
 
     },[])
-    
+
     useEffect(()=>{
         function makeRequest() {
-
-            //setStockRTP({"price":"¥71.00","abChange":"-0.15","reChange":"-0.21%"})
 
             stockMgr().getRTP({stockCode: code}).then((value) => {
                 console.log("get RTP return: " + value)
@@ -136,18 +122,35 @@ export function StockDisplay({code}) {
 
     },[])
 
+    const [loadingCollect,setLoadingCollect]=useState(false);
+    const [loadingHold,setLoadingHold]=useState(false);
+
     function handleCollect(type:number) {
-        stockMgr().collectStock({id:global.UserSlice.userId,stockCode:code,type:type})
+        switch (type) {
+            case 0:setLoadingCollect(true);break;
+            case 1:setLoadingHold(true);break;
+        }
+
+        stockMgr().collectStock({id:userSlice.userId,stockCode:code,type:type})
             .then((value) => {
                 if(value.state!==2)
                     type==0?
                         setIsCollected({collect:value.state == 1,hold:isCollected.hold})
-                    :
+                        :
                         setIsCollected({collect:isCollected.collect,hold:value.state == 1})
+                switch (type) {
+                    case 0:setLoadingCollect(false);break;
+                    case 1:setLoadingHold(false);break;
+                }
             }).catch((reason) => {
                 alert("网络错误,请求失败!")
                 console.log("collectStock error: " + reason)
+                switch (type) {
+                    case 0:setLoadingCollect(false);break;
+                    case 1:setLoadingHold(false);break;
+                }
         });
+
 
     }
 
@@ -155,10 +158,10 @@ export function StockDisplay({code}) {
     return <div className={s('stockDisplay')}>
         <div className={s("title")}>
             <span>股票详情</span>
-            {global.UserSlice.isLogIn &&
+            {userSlice.isLogIn &&
                 <div>
-                    <button onClick={()=>handleCollect(0)}>{isCollected.collect?"已收藏":"+收藏"}</button>
-                    <button onClick={()=>handleCollect(1)}>{isCollected.hold?"已持有":"+持有"}</button>
+                    <button onClick={()=>handleCollect(0)}>{loadingCollect?"收藏中":isCollected.collect?"已收藏":"+收藏"}</button>
+                    <button onClick={()=>handleCollect(1)}>{loadingHold?"持有中":isCollected.hold?"已持有":"+持有"}</button>
                 </div>
             }
         </div>

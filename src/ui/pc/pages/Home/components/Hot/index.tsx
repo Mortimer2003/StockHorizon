@@ -11,81 +11,17 @@ import {stockMgr} from "../../../../../../modules/stock/StockManager";
 const s = makeStyle(style);
 
 export function Hot() {
-    const [hotList,setHotList] = useState<StockHot[]>([
-            {
-                name: "",
-                code: "",
-                exchange: "",
-                heat: null,
-                heatChange: null
-            },
-            {
-                name: "",
-                code: "",
-                exchange: "",
-                heat: null,
-                heatChange: null
-            },
-            {
-                name: "",
-                code: "",
-                exchange: "",
-                heat: null,
-                heatChange: null
-            },
-            {
-                name: "",
-                code: "",
-                exchange: "",
-                heat: null,
-                heatChange: null
-            },
-            {
-                name: "",
-                code: "",
-                exchange: "",
-                heat: null,
-                heatChange: null
-            },
-            {
-                name: "",
-                code: "",
-                exchange: "",
-                heat: null,
-                heatChange: null
-            },
-            {
-                name: "",
-                code: "",
-                exchange: "",
-                heat: null,
-                heatChange: null
-            },
-            {
-                name: "",
-                code: "",
-                exchange: "",
-                heat: null,
-                heatChange: null
-            },
-            {
-                name: "",
-                code: "",
-                exchange: "",
-                heat: null,
-                heatChange: null
-            },
-            {
-                name: "",
-                code: "",
-                exchange: "",
-                heat: null,
-                heatChange: null
-            }
-        ])
+    const noneItem = {
+        name: "",
+        code: "",
+        exchange: "",
+        heat: null,
+        heatChange: null
+    }
+    const noneList=Array(10).fill(noneItem);
+    const [hotList,setHotList] = useState<StockHot[]>(noneList)
 
     useEffect(()=>{
-        //setHotList(dataTest.hotList); //TODO:测试用,待删除
 
         function makeRequest() {
             stockMgr().getHot({length: 10, type: 0, limit: 1640966400000})
@@ -102,37 +38,15 @@ export function Hot() {
         setInterval(makeRequest, 60 * 60 * 1000);
     },[])
 
-
-
-    
-    //TODO:处理tag切换后的请求发起
-
-    const [tagIdx, setTagIdx] = useState(0);
-    const menuNames=["全球","沪深","港股","美股"]
-
-    const handleMenuClick = (index, name) => {
-        setTagIdx(index);
-    };
-
     return <div className={s('hot-container')}>
         <div className={s("title")}>
             <span>热门股票：</span>
-            <div className={s("select")}>
-            {/*<span>筛选:</span>*/}
-            {/*{menuNames.map((name, index) => (*/}
-            {/*    <div key={index}*/}
-            {/*         onClick={() => handleMenuClick(index, name)}*/}
-            {/*         className={s(`item${index+1}`, tagIdx == index && "current")}>*/}
-            {/*        {name}*/}
-            {/*    </div>*/}
-            {/*))}*/}
-        </div>
         </div>
         <div className={s("separate")}></div>
         <div className={s("content")}>
             <ol>{hotList.map((item, i) =>
                 <>
-                    {item.code&&<li>
+                    {item.code && <li>
                         <Link to={`/stock/${item.code}`} className={s("rank-link")}>
                             <span className={s("name")}>{item.name}</span>
                             <div className={s(item.heatChange == 0 ? "" : item.heatChange > 0 ? "red" : "green")}>

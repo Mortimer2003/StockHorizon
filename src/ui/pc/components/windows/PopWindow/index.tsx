@@ -6,7 +6,6 @@ import style from "./index.module.css";
 const s = makeStyle(style);
 
 type Params = {
-	// id?: string
 	className?: string
 	style?: React.CSSProperties
 	width?: string
@@ -16,7 +15,6 @@ type Params = {
 }
 
 export function PopWindow({width, isShow, children, onCancel,
-							  // id = null,
 							  className = null, style = null }: Params) {
 	const maskStyle = {backdropFilter: 'blur(5px)' }
 
@@ -33,11 +31,7 @@ export function PopWindow({width, isShow, children, onCancel,
 				  footer={null}
 				  centered={true} onCancel={onCancel}
 				  forceRender={true} wrapClassName="wrap-modal">
-		{/*<div id={id} style={{*/}
-		{/*	width: "auto", height: "auto", background: "transparent", ...style*/}
-		{/*}}>*/}
 		{children}
-		{/*</div>*/}
 	</Modal>
 }
 
