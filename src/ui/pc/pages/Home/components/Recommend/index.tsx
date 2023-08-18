@@ -12,6 +12,7 @@ import {UserContext} from "../../../../../root";
 const s = makeStyle(style);
 
 export function Recommend() {
+
     const {userSlice, setUserSlice}=useContext(UserContext)
 
     const noneList=Array(5).fill({name:"加载中……",code:"",degree:null});

@@ -87,6 +87,7 @@ export function Navigation(props) {
 
     const noneAvatar = defaultUserSlice.avatar;
 
+
     useEffect(()=>{
         if(userSlice.isLogIn)
             userMgr().getUserInfo({id:userSlice.userId})

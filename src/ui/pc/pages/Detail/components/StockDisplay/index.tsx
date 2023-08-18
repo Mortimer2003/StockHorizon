@@ -73,7 +73,6 @@ export function StockDisplay({code,setName}) {
     },[])
 
     useEffect(()=>{
-
         function makeRequest() {
             stockMgr().getStockDetail({stockCode: code,id:userSlice.isLogIn?userSlice.userId:""})
                 .then((value) => {
